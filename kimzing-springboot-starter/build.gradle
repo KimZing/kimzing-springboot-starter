@@ -2,12 +2,13 @@ plugins {
     id 'org.springframework.boot' version '2.3.0.RELEASE' apply false
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'java-library'
+    id 'maven-publish'
 }
 
 group 'com.kimzing'
 version '1.0.0-SNAPSHOT'
-sourceCompatibility = '1.8'
 description = "封装SpringBoot开发中常用的功能，抽象为基础能力，通过简单的配置即可实现相应功能"
+sourceCompatibility = '1.8'
 
 dependencies {
     api 'com.alibaba:fastjson:1.2.62'
@@ -37,5 +38,40 @@ repositories {
 dependencyManagement {
     imports {
         mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+}
+
+//打包源码
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            //指定group/artifact/version信息，可以不填。默认使用项目group/name/version作为groupId/artifactId/version
+            groupId = project.group
+            artifactId = project.name
+            version = project.version
+            //如果是war包填写components.web，如果是jar包填写components.java
+            from components.java
+
+            //配置上传源码
+            artifact sourceJar {
+                classifier "src"
+            }
+
+        }
+    }
+    repositories {
+        maven {
+            //指定要上传的maven私服仓库
+            url = "http://mvn.kimzing.com/nexus/content/repositories/snapshots/"
+            //认证用户和密码
+            credentials {
+                username = 'USERNAME'
+                password = 'PASSWORD'
+            }
+        }
     }
 }
