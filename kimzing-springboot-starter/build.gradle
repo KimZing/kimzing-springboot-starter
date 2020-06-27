@@ -1,0 +1,41 @@
+plugins {
+    id 'org.springframework.boot' version '2.3.0.RELEASE' apply false
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java-library'
+}
+
+group 'com.kimzing'
+version '1.0.0-SNAPSHOT'
+sourceCompatibility = '1.8'
+description = "封装SpringBoot开发中常用的功能，抽象为基础能力，通过简单的配置即可实现相应功能"
+
+dependencies {
+    api 'com.alibaba:fastjson:1.2.62'
+    api 'ma.glasnost.orika:orika-core:1.5.4'
+    api 'org.apache.commons:commons-lang3:3.9'
+    api 'commons-io:commons-io:2.6'
+    api 'org.apache.commons:commons-configuration2:2.7'
+    api 'org.apache.commons:commons-collections4:4.4'
+    api 'commons-codec:commons-codec:1.13'
+    api 'commons-fileupload:commons-fileupload:1.4'
+    api 'com.google.guava:guava:28.1-jre'
+
+    compileOnly 'org.springframework.boot:spring-boot-starter'
+    compileOnly 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.springframework.boot:spring-boot-starter-aop'
+    compileOnly 'org.springframework.boot:spring-boot-starter-validation'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+}
+
+repositories {
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+    }
+}

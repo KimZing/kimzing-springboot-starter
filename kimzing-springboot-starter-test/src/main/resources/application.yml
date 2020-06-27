@@ -1,0 +1,9 @@
+server:
+  port: 8080
+spring:
+  profiles:
+    active: kimzing
+  application:
+    name: kimzing-springboot-starter-test
+    version: 1.0.0
+    description: 测试项目

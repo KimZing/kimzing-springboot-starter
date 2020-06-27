@@ -1,0 +1,32 @@
+# 基本属性配置
+kimzing:
+  log:
+    # 方法日志开关(默认false)
+    enabled: false
+    # 日志中的时间戳格式(可选)
+    time-pattern: yyyy-MM-dd HH:mm:ss:SSS
+  web:
+    resolver:
+      # 是否开启Get请求方法解析(默认true)
+      json:
+        enabled: true
+    advice:
+      # 是否启用异常拦截(默认false)
+      enabled: true
+    restTemplate:
+      # 是否自动配置RestTemplate(默认true)
+      enabled: true
+    info:
+      # 是否启用/info接口(默认false)
+      enabled: true
+      # 接口路径
+      path: /info
+      params:
+        application: ${spring.application.name}
+        port: ${server.port}
+        profile: ${spring.profiles.active}
+        version: ${spring.application.version}
+        description: ${spring.application.description}
+  # 加载指定配置文件到Spring的Environment
+  property:
+    files: ["classpath:message.properties","classpath:exception.properties"]

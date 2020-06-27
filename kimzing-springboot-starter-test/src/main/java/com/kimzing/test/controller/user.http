@@ -1,0 +1,35 @@
+### 添加用户
+POST http://localhost:8080/user
+Content-Type: application/json
+
+{
+  "username": "kimzing",
+  "password":"123456",
+  "age": "25",
+  "gender": "MAN"
+}
+
+### 更改用户
+PUT http://localhost:8080/user/1
+Content-Type: application/json
+
+{
+  "username": "kimzing",
+  "password":"12345678",
+  "age": "26",
+  "gender": "MAN"
+}
+
+### 查询用户
+GET http://localhost:8080/user/1
+
+### 查询用户列表
+GET http://localhost:8080/user/list?pageNum=1&pageSize=10
+
+### 删除用户
+DELETE http://localhost:8080/user/1
+
+### 根据条件查询用户列表
+GET http://localhost:8080/user/list/condition?{"ageFrom":"18","ageTo":"24"}
+
+###

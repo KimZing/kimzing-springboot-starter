@@ -1,0 +1,4 @@
+rootProject.name = 'kimzing-springboot-starter'
+
+include 'kimzing-springboot-starter'
+include 'kimzing-springboot-starter-test'
