@@ -18,13 +18,6 @@
         <name>KimZing</name>
         <url>http://mvn.kimzing.com/nexus/content/repositories/snapshots/</url>
     </repository>
-    <!--使用release版本-->
-    <repository>
-        <id>KimZing-RELEASE</id>
-        <name>KimZing</name>
-        <url>http://mvn.kimzing.com/nexus/content/repositories/releases/</url>
-    </repository>
-</repositories>
 ```
 
 然后引入如下依赖刷新即可
