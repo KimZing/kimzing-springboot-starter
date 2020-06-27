@@ -20,6 +20,16 @@
     </repository>
 ```
 
+或在`gradle.build`中引入私有仓库地址
+
+```groovy
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://mvn.kimzing.com/nexus/content/repositories/snapshots/' }
+        mavenCentral()
+    }
+```
+
 然后引入如下依赖刷新即可
 
 ```xml
@@ -28,6 +38,10 @@
     <artifactId>kimgzing-springboot-starter</artifactId>
     <version>${version}</version>
 </dependency>
+```
+
+```groovy
+
 ```
 
 :eyes:[SNAPSHOT版本](http://mvn.kimzing.com/nexus/content/repositories/snapshots/com/kimzing/kimzing-springboot-starter/)
