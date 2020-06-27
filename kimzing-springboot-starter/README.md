@@ -37,8 +37,6 @@
 </dependency>
 ```
 
-:eyes:[RELEASE版本](http://mvn.kimzing.com/nexus/content/repositories/releases/com/kimzing/kimzing-springboot-starter/)  
-
 :eyes:[SNAPSHOT版本](http://mvn.kimzing.com/nexus/content/repositories/snapshots/com/kimzing/kimzing-springboot-starter/)
 
 ## 项目使用
