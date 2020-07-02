@@ -2,7 +2,7 @@
 kimzing:
   log:
     # 方法日志开关(默认false)
-    enabled: false
+    enabled: true
     # 日志中的时间戳格式(可选)
     time-pattern: yyyy-MM-dd HH:mm:ss:SSS
   web:

@@ -3,6 +3,7 @@ POST http://localhost:8080/user
 Content-Type: application/json
 
 {
+  "id": 1,
   "username": "kimzing",
   "password":"123456",
   "age": "25",
@@ -21,7 +22,7 @@ Content-Type: application/json
 }
 
 ### 查询用户
-GET http://localhost:8080/user/1
+GET http://localhost:8080/user/-2
 
 ### 查询用户列表
 GET http://localhost:8080/user/list?pageNum=1&pageSize=10
