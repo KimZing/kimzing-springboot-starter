@@ -1,8 +1,8 @@
 package com.kimzing.test.log;
 
-import com.alibaba.fastjson.JSON;
 import com.kimzing.log.LogAspect;
 import com.kimzing.log.LogInfo;
+import com.kimzing.utils.json.JsonUtil;
 import com.kimzing.utils.log.LogUtil;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +17,6 @@ public class JsonLogAspect extends LogAspect {
 
     @Override
     public void handleLogInfo(LogInfo logInfo) {
-        LogUtil.info("method exec: [{}]", JSON.toJSONString(logInfo));
+        LogUtil.info("method exec: [{}]", JsonUtil.beanToJson(logInfo));
     }
 }

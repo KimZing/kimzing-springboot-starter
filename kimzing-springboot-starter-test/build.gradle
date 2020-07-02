@@ -12,6 +12,7 @@ sourceCompatibility = '1.8'
 
 repositories {
     maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'http://mvn.kimzing.com/nexus/content/repositories/releases/' }
     mavenCentral()
 }
 
@@ -26,6 +27,7 @@ configurations {
 }
 
 dependencies {
+    implementation 'com.kimzing:kimzing-utils:1.0.0'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-autoconfigure-processor'
     implementation project(":kimzing-springboot-starter")

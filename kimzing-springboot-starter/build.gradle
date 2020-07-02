@@ -1,26 +1,17 @@
 plugins {
     id 'org.springframework.boot' version '2.3.0.RELEASE' apply false
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'java-library'
+    id 'java'
     id 'maven-publish'
 }
 
 group 'com.kimzing'
-version '1.0.0-SNAPSHOT'
+version '1.0.0'
 description = "封装SpringBoot开发中常用的功能，抽象为基础能力，通过简单的配置即可实现相应功能"
 sourceCompatibility = '1.8'
 
 dependencies {
-    api 'com.alibaba:fastjson:1.2.62'
-    api 'ma.glasnost.orika:orika-core:1.5.4'
-    api 'org.apache.commons:commons-lang3:3.9'
-    api 'commons-io:commons-io:2.6'
-    api 'org.apache.commons:commons-configuration2:2.7'
-    api 'org.apache.commons:commons-collections4:4.4'
-    api 'commons-codec:commons-codec:1.13'
-    api 'commons-fileupload:commons-fileupload:1.4'
-    api 'com.google.guava:guava:28.1-jre'
-
+    implementation 'com.kimzing:kimzing-utils:1.0.0'
     compileOnly 'org.springframework.boot:spring-boot-starter'
     compileOnly 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.springframework.boot:spring-boot-starter-aop'
@@ -33,6 +24,7 @@ dependencies {
 
 repositories {
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'http://mvn.kimzing.com/nexus/content/repositories/releases/' }
 }
 
 dependencyManagement {
@@ -66,11 +58,11 @@ publishing {
     repositories {
         maven {
             //指定要上传的maven私服仓库
-            url = "http://mvn.kimzing.com/nexus/content/repositories/snapshots/"
+            url = "http://mvn.kimzing.com/nexus/content/repositories/releases/"
             //认证用户和密码
             credentials {
-                username = 'USERNAME'
-                password = 'PASSWORD'
+                username = 'admin'
+                password = 'KimZing123456!'
             }
         }
     }

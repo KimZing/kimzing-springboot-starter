@@ -1,6 +1,6 @@
 package com.kimzing.web.resolver.json;
 
-import com.alibaba.fastjson.JSON;
+import com.kimzing.utils.json.JsonUtil;
 import com.kimzing.utils.log.LogUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -41,8 +41,8 @@ public class JsonParamResolver implements HandlerMethodArgumentResolver {
         Class<?> parameterType = methodParameter.getParameterType();
         JsonParam parameterAnnotation = methodParameter.getParameterAnnotation(JsonParam.class);
 
-        if (JSON.isValid(jsonParam)) {
-            return JSON.parseObject(jsonParam, parameterType);
+        if (JsonUtil.isValid(jsonParam)) {
+            return JsonUtil.jsonToBean(jsonParam, parameterType);
         }
 
         if (parameterAnnotation.required()) {

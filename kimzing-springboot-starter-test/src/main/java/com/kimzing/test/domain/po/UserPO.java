@@ -15,8 +15,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class UserPO extends AbstractPO {
 
-    private Long id;
-
     private String username;
 
     private String password;
