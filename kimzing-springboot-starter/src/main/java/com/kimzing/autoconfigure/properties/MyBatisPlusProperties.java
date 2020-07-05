@@ -13,14 +13,36 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "kimzing.mybatis-plus", ignoreUnknownFields = true)
 public class MyBatisPlusProperties {
 
-    /**
-     * 控制开关
-     */
-    private Boolean enabled;
+    private PageProperties page;
 
-    /**
-     * 开启count的join优化
-     */
-    private Boolean optimizeJoin = true;
+    private PerformanceProperties performance;
+
+    @Data
+    public static class PageProperties {
+        /**
+         * 控制开关
+         */
+        private Boolean enabled;
+
+        /**
+         * 开启count的join优化
+         */
+        private Boolean optimizeJoin = true;
+
+    }
+
+    @Data
+    public static class PerformanceProperties {
+        /**
+         * 是否格式化SQL
+         */
+        private Boolean formate = false;
+
+        /**
+         * 最长执行时间
+         */
+        private Long maxTime = 1000L;
+
+    }
 
 }

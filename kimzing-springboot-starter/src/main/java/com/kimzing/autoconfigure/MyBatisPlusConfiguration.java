@@ -33,7 +33,7 @@ public class MyBatisPlusConfiguration {
     public PaginationInterceptor paginationInterceptor(MyBatisPlusProperties myBatisPlusProperties) {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
         // 开启 count 的 join 优化,只针对部分 left join
-        paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(myBatisPlusProperties.getOptimizeJoin()));
+        paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(myBatisPlusProperties.getPage().getOptimizeJoin()));
         return paginationInterceptor;
     }
 
@@ -43,10 +43,10 @@ public class MyBatisPlusConfiguration {
     @Bean
     @Profile({"dev","test","sit","perf","uat"})
     @ConditionalOnMissingBean(PerformanceInterceptor.class)
-    public PerformanceInterceptor performanceInterceptor() {
+    public PerformanceInterceptor performanceInterceptor(MyBatisPlusProperties myBatisPlusProperties) {
         PerformanceInterceptor performanceInterceptor = new PerformanceInterceptor();
-        performanceInterceptor.setFormat(false);
-        performanceInterceptor.setMaxTime(100);
+        performanceInterceptor.setFormat(myBatisPlusProperties.getPerformance().getFormate());
+        performanceInterceptor.setMaxTime(myBatisPlusProperties.getPerformance().getMaxTime());
         return performanceInterceptor;
     }
 
