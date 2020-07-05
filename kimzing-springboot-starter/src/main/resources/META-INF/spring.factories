@@ -2,4 +2,6 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.kimzing.autoconfigure.LogAspectAutoConfiguration,\
   com.kimzing.autoconfigure.PropertyFileAutoConfiguration,\
   com.kimzing.autoconfigure.WebAutoConfiguration,\
-  com.kimzing.autoconfigure.SpringContextUtilAutoConfiguration
+  com.kimzing.autoconfigure.SpringContextUtilAutoConfiguration,\
+  com.kimzing.autoconfigure.MyBatisPlusConfiguration,\
+  com.kimzing.autoconfigure.SwaggerConfiguration
