@@ -21,6 +21,6 @@ public class MyBatisPlusProperties {
     /**
      * 开启count的join优化
      */
-    private Boolean optimizeJoin;
+    private Boolean optimizeJoin = true;
 
 }

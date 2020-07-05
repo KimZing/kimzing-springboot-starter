@@ -13,7 +13,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "kimzing.swagger", ignoreUnknownFields = true)
 public class SwaggerProperties {
 
-
     /**
      * 控制开关
      */
@@ -22,37 +21,37 @@ public class SwaggerProperties {
     /**
      * 标题
      */
-    private String title;
+    private String title = "${spring.application.name}";
 
     /**
-     * 文档描述
+     * 项目描述
      */
-    private String description;
+    private String description = "项目描述";
 
     /**
      * 项目路径
      */
-    private String termsOfServiceUrl;
+    private String termsOfServiceUrl = "http://localhost:8080";
 
     /**
      * 作者
      */
-    private String authorName;
+    private String authorName = "unknow";
 
     /**
      * 邮箱
      */
-    private String authorEmail;
+    private String authorEmail = "unknow";
 
     /**
      * 作者主页
      */
-    private String authorUrl;
+    private String authorUrl = "unkonw";
 
     /**
      * 版本
      */
-    private String version;
+    private String version = "1.0.0";
 
     /**
      * 扫描的路径
