@@ -20,7 +20,6 @@ import org.springframework.context.annotation.Profile;
  */
 @Configuration
 @EnableConfigurationProperties({MyBatisPlusProperties.class})
-@ConditionalOnProperty(prefix = "kimzing.mybatis-plus", name = "enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass({PaginationInterceptor.class, JsqlParserCountOptimize.class})
 public class MyBatisPlusConfiguration {
 
