@@ -29,6 +29,7 @@ kimzing:
         description: ${spring.application.description}
   # swagger配置
   swagger:
+    # 当存在swagger依赖时，是否开启(默认true)
     enabled: true
     title: 标题
     description: 文档描述
@@ -42,10 +43,12 @@ kimzing:
   # mybatis-plus配置
   mybatis-plus:
     page:
+      # 当存在mybatisPlus依赖时，是否开启分页(默认true)
       enabled: true
       # 分页join数量查询优化
       optimizeJoin: true
     performance:
+      # 当存在mybatisPlus依赖时，是否开启sql分析(默认true)
       enabled: true
       # 是否格式化输出SQL
       formate: true
