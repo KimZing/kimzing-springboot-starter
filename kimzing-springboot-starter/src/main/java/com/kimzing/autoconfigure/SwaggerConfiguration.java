@@ -12,6 +12,7 @@ import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Swagger配置.
@@ -19,6 +20,7 @@ import springfox.documentation.spring.web.plugins.Docket;
  * @author KimZing - kimzing@163.com
  * @since 2020/7/5 16:51
  */
+@EnableSwagger2
 @Configuration
 @EnableConfigurationProperties({SwaggerProperties.class})
 @ConditionalOnProperty(prefix = "kimzing.swagger", name = "enabled", havingValue = "true")
