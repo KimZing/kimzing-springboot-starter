@@ -13,9 +13,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "kimzing.mybatis-plus", ignoreUnknownFields = true)
 public class MyBatisPlusProperties {
 
-    private PageProperties page;
+    private PageProperties page = new PageProperties();
 
-    private PerformanceProperties performance;
+    private PerformanceProperties performance = new PerformanceProperties();
 
     @Data
     public static class PageProperties {
@@ -33,6 +33,12 @@ public class MyBatisPlusProperties {
 
     @Data
     public static class PerformanceProperties {
+
+        /**
+         * 控制开关
+         */
+        private Boolean enabled;
+
         /**
          * 是否格式化SQL
          */

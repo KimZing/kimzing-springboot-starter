@@ -41,9 +41,16 @@ kimzing:
 
   # mybatis-plus配置
   mybatis-plus:
-    enabled: true
-    # 分页join数量查询优化
-    optimizeJoin: true
+    page:
+      enabled: true
+      # 分页join数量查询优化
+      optimizeJoin: true
+    performance:
+      enabled: true
+      # 是否格式化输出SQL
+      formate: true
+      # 排查慢SQL的限制时间
+      maxTime: 1000
   # 加载指定配置文件到Spring的Environment
   property:
     files: ["classpath:message.properties","classpath:exception.properties"]

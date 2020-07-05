@@ -28,6 +28,7 @@ public class MyBatisPlusConfiguration {
      * @return
      */
     @Bean
+    @ConditionalOnProperty(prefix = "kimzing.mybatis-plus.page", name = "enabled", havingValue = "true", matchIfMissing = true)
     @ConditionalOnMissingBean(PaginationInterceptor.class)
     public PaginationInterceptor paginationInterceptor(MyBatisPlusProperties myBatisPlusProperties) {
         PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
@@ -41,6 +42,7 @@ public class MyBatisPlusConfiguration {
      */
     @Bean
     @Profile({"dev","test","sit","perf","uat"})
+    @ConditionalOnProperty(prefix = "kimzing.mybatis-plus.performance", name = "enabled", havingValue = "true", matchIfMissing = true)
     @ConditionalOnMissingBean(PerformanceInterceptor.class)
     public PerformanceInterceptor performanceInterceptor(MyBatisPlusProperties myBatisPlusProperties) {
         PerformanceInterceptor performanceInterceptor = new PerformanceInterceptor();
