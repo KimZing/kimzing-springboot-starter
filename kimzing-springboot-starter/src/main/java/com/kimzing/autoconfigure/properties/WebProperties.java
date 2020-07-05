@@ -32,6 +32,11 @@ public class WebProperties {
      */
     private AdviceProperties advice;
 
+    /**
+     * 跨域配置
+     */
+    private CorsProperties cors = new CorsProperties();
+
     @Data
     public static class ParamResolverProperties {
         /**
@@ -80,6 +85,19 @@ public class WebProperties {
          * RestTemplate开关
          */
         private Boolean enabled;
+    }
+
+    @Data
+    public static class CorsProperties {
+        /**
+         * 跨域开关
+         */
+        private Boolean enabled;
+
+        /**
+         * 允许的域
+         */
+        private String[] origins = new String[]{"*"};
     }
 
 }

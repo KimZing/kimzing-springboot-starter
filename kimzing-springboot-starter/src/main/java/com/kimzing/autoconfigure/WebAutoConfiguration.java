@@ -14,6 +14,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * RestTemplate自动配置.
@@ -90,6 +92,36 @@ public class WebAutoConfiguration {
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     public MethodParamResolverConfiguration methodParamResolverConfiguration(ApplicationContext context) {
         return new MethodParamResolverConfiguration(context);
+    }
+
+    /**
+     * SpringMVC跨域支持
+     * @param webProperties
+     * @return
+     */
+    @Bean
+    @ConditionalOnProperty(prefix = "kimzing.web.cors",
+            name = "enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    @ConditionalOnMissingBean(WebMvcConfigurer.class)
+    public WebMvcConfigurer corsConfigurer(WebProperties webProperties) {
+        return new WebMvcConfigurer() {
+            @Override
+            //重写父类提供的跨域请求处理的接口
+            public void addCorsMappings(CorsRegistry registry) {
+                //添加映射路径
+                registry.addMapping("/**")
+                        //放行哪些原始域
+                        .allowedOrigins(webProperties.getCors().getOrigins())
+                        //是否发送Cookie信息
+                        .allowCredentials(true)
+                        //放行哪些原始域(请求方式)
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .maxAge(3600)
+                        //放行哪些原始域(头部信息)
+                        .allowedHeaders("*");
+            }
+        };
     }
 
 }
