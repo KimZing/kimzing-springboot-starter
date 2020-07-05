@@ -41,7 +41,7 @@ public class MyBatisPlusConfiguration {
      * SQL执行效率插件,仅dev/test/sit环境开启
      */
     @Bean
-    @Profile({"dev","test","sit"})
+    @Profile({"dev","test","sit","perf","uat"})
     @ConditionalOnMissingBean(PerformanceInterceptor.class)
     public PerformanceInterceptor performanceInterceptor() {
         PerformanceInterceptor performanceInterceptor = new PerformanceInterceptor();
