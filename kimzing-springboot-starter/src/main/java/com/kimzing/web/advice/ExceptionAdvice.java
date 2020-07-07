@@ -1,7 +1,7 @@
 package com.kimzing.web.advice;
 
-import com.kimzing.utils.exception.BusinessException;
-import com.kimzing.utils.result.ApiResult;
+import com.kimzing.utils.exception.CustomException;
+import com.kimzing.utils.exception.ExceptionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
-import java.util.stream.Collectors;
 
 /**
  * 异常捕捉.
@@ -24,13 +23,13 @@ public class ExceptionAdvice {
 
     /**
      * 服务端自定义异常处理
-     * @param businessException
+     * @param customException
      * @return
      */
-    @ExceptionHandler(BusinessException.class)
+    @ExceptionHandler(CustomException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiResult handlerBusinessException(BusinessException businessException) {
-        return ApiResult.error(businessException.getMessage());
+    public CustomException handlerBusinessException(CustomException customException) {
+        return customException;
     }
 
     /**
@@ -40,17 +39,17 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResult handlerValidationException(ValidationException validationException) {
+    public CustomException handlerValidationException(ValidationException validationException) {
         // 如果是ConstraintViolationException，则可能出现多个异常信息
         if (validationException instanceof ConstraintViolationException) {
             ConstraintViolationException constraintViolationException =
                     (ConstraintViolationException) validationException;
 
-            String[] codes = constraintViolationException.getConstraintViolations().stream()
-                    .map(c -> c.getMessage()).collect(Collectors.toList()).toArray(new String[]{});
-            return ApiResult.error(codes);
+            String message = constraintViolationException.getConstraintViolations().stream()
+                    .map(c -> c.getMessage()).findFirst().get();
+            return ExceptionManager.createByCodeAndMessage("VALIDATION", message);
         }
-        return ApiResult.error(validationException.getMessage());
+        return ExceptionManager.createByCodeAndMessage("VALIDATION", validationException.getMessage());
     }
 
 
@@ -61,8 +60,8 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiResult handlerUncatchException(Exception e) {
-        return ApiResult.error("-1", e.getMessage());
+    public CustomException handlerUncatchException(Exception e) {
+        return ExceptionManager.createByCodeAndMessage("SYSTEM", e.getMessage());
     }
 
 }

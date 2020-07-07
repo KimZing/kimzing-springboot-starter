@@ -10,6 +10,9 @@ kimzing:
       # 是否开启Get请求方法解析(默认true)
       json:
         enabled: true
+    result:
+      # 是否开启统一结果包装
+      enabled: true
     advice:
       # 是否启用异常拦截(默认false)
       enabled: true

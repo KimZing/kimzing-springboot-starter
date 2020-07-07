@@ -2,6 +2,7 @@ package com.kimzing.autoconfigure;
 
 import com.kimzing.autoconfigure.properties.WebProperties;
 import com.kimzing.web.advice.ExceptionAdvice;
+import com.kimzing.web.advice.ResultAdvice;
 import com.kimzing.web.info.KimZingInfoController;
 import com.kimzing.web.resolver.MethodParamResolverConfiguration;
 import com.kimzing.web.resolver.json.JsonParamResolver;
@@ -59,6 +60,18 @@ public class WebAutoConfiguration {
     }
 
     /**
+     * 统一结果处理器.
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnProperty(prefix = "kimzing.web.result",
+            name = "enabled", havingValue = "true")
+    public ResultAdvice resultAdvice() {
+        return new ResultAdvice();
+    }
+
+    /**
      * 异常切面拦截处理
      *
      * @return
@@ -66,10 +79,10 @@ public class WebAutoConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "kimzing.web.advice",
             name = "enabled", havingValue = "true")
-    @ConditionalOnMissingBean(ExceptionAdvice.class)
     public ExceptionAdvice exceptionAdvice() {
         return new ExceptionAdvice();
     }
+
 
     /**
      * json参数解析器
