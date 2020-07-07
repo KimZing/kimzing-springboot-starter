@@ -55,7 +55,7 @@ import static org.apache.dubbo.common.constants.FilterConstants.VALIDATION_KEY;
  * @see Filter
  * @see org.apache.dubbo.validation.support.AbstractValidation
  */
-@Activate(group = {CONSUMER, PROVIDER}, value = VALIDATION_KEY, order = 10000)
+@Activate(group = {CONSUMER, PROVIDER}, value = VALIDATION_KEY, order = 1)
 public class DubboValidationFilter implements Filter {
 
     private Validation validation;
