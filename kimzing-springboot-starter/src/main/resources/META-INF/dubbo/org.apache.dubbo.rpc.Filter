@@ -1,1 +1,2 @@
 exceptionFilter=com.kimzing.dubbo.filter.DubboExceptionFilter
+validationFilter=com.kimzing.dubbo.filter.DubboValidationFilter
