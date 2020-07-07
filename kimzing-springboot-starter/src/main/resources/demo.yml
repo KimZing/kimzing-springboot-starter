@@ -13,6 +13,8 @@ kimzing:
     result:
       # 是否开启统一结果包装
       enabled: true
+      # 包装哪些包下的返回体
+      package: com.kimzing
     advice:
       # 是否启用异常拦截(默认false)
       enabled: true

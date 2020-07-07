@@ -2,6 +2,7 @@ package com.kimzing.web.advice;
 
 import com.kimzing.utils.exception.CustomException;
 import com.kimzing.utils.result.ApiResult;
+import com.kimzing.utils.spring.SpringPropertyUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,7 +23,7 @@ public class ResultAdvice implements ResponseBodyAdvice {
 
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
-        return true;
+        return returnType.getDeclaringClass().getName().startsWith(SpringPropertyUtil.getValue("kimzing.web.result.package"));
     }
 
     @Override
