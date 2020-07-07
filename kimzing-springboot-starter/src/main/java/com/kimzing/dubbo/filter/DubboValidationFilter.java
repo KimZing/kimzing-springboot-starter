@@ -16,13 +16,22 @@
  */
 package com.kimzing.dubbo.filter;
 
+import com.kimzing.utils.exception.CustomException;
+import com.kimzing.utils.exception.ExceptionManager;
+import com.kimzing.utils.exception.ServiceInfo;
+import com.kimzing.utils.spring.SpringPropertyUtil;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.common.utils.ConfigUtils;
 import org.apache.dubbo.rpc.*;
 import org.apache.dubbo.validation.Validation;
 import org.apache.dubbo.validation.Validator;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 import static org.apache.dubbo.common.constants.CommonConstants.CONSUMER;
 import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER;
@@ -49,6 +58,8 @@ import static org.apache.dubbo.common.constants.FilterConstants.VALIDATION_KEY;
  * 1)Implement a SpecialValidation.java class (package name xxx.yyy.zzz) either by implementing {@link Validation} or extending {@link org.apache.dubbo.validation.support.AbstractValidation} <br/>
  * 2)Implement a SpecialValidator.java class (package name xxx.yyy.zzz) <br/>
  * 3)Add an entry <b>special</b>=<b>xxx.yyy.zzz.SpecialValidation</b> under <b>META-INF folders org.apache.dubbo.validation.Validation file</b>.
+ *
+ * 一定要注意order顺序问题
  *
  * @see Validation
  * @see Validator
@@ -86,7 +97,20 @@ public class DubboValidationFilter implements Filter {
                 }
             } catch (RpcException e) {
                 throw e;
-            } catch (ValidationException e) {
+            } catch (ConstraintViolationException e) {
+                Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+                if (constraintViolations.size() > 0) {
+                    // 不用关心所有的校验失败情况，关心一个就够了
+                    String message = constraintViolations.iterator().next().getMessage();
+                    CustomException customException = ExceptionManager.createByCodeAndMessage(message,
+                            SpringPropertyUtil.getValueWithDefault(message, "未设置校验提示信息"));
+                    ArrayList<ServiceInfo> services = customException.getServices() == null ? new ArrayList<>() : customException.getServices();
+                    ServiceInfo serviceInfo = buildServiceInfo();
+                    services.add(serviceInfo);
+                    customException.setServices(services);
+                    return AsyncRpcResult.newDefaultAsyncResult(customException, invocation);
+                }
+
                 // only use exception's message to avoid potential serialization issue
                 return AsyncRpcResult.newDefaultAsyncResult(new ValidationException(e.getMessage()), invocation);
             } catch (Throwable t) {
@@ -94,6 +118,16 @@ public class DubboValidationFilter implements Filter {
             }
         }
         return invoker.invoke(invocation);
+    }
+
+    private static ServiceInfo buildServiceInfo() {
+        RpcContext context = RpcContext.getContext();
+        ServiceInfo serviceInfo = new ServiceInfo();
+        serviceInfo.setAddress(context.getLocalAddressString());
+        serviceInfo.setAppName(context.getUrl().getParameter("application"));
+        serviceInfo.setInterName(context.getUrl().getParameter("interface"));
+        serviceInfo.setMethodName(context.getMethodName());
+        return serviceInfo;
     }
 
 }
