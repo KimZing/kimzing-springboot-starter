@@ -35,8 +35,11 @@ public class WebRequestLogAspect {
     @Value("${yyyy-MM-dd HH:mm:ss:SSS}")
     private String timePattern;
 
-    @Pointcut("(@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController))")
-    public void logPointCut() {}
+    @Pointcut("(@within(org.springframework.stereotype.Controller) || " +
+            "@within(org.springframework.web.bind.annotation.RestController)) && " +
+            "execution(* com.kimzing..*.*(..))")
+    public void logPointCut() {
+    }
 
     /**
      * 对方法进行环绕处理
@@ -87,7 +90,9 @@ public class WebRequestLogAspect {
         sb.append(JsonUtil.beanToJson(logInfo, timePattern));
         sb.append("\n================  Request End  ================");
         log.info(sb.toString());
-    };
+    }
+
+    ;
 
     /**
      * 对日志信息进行解析并添加进日志信息中

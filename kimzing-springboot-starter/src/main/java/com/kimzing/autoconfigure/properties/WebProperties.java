@@ -72,6 +72,11 @@ public class WebProperties {
          */
         private Boolean enabled;
 
+        /**
+         * 切入表达式
+         */
+        private String execution;
+
     }
 
     @Data
