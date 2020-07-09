@@ -6,7 +6,6 @@ import com.kimzing.utils.spring.SpringPropertyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.rpc.*;
@@ -58,6 +57,20 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                     return;
                 }
 
+                String className = exception.getClass().getName();
+                if (className.startsWith(SpringPropertyUtil.getValue("dubbo.provider.exception.package"))) {
+                    CustomException customException = (CustomException) appResponse.getException();
+                    if (customException.getMessage() == null) {
+                        customException.setMessage(SpringPropertyUtil.getValueWithDefault(customException.getCode(), "异常信息未定义"));
+                    }
+                    ArrayList<ServiceInfo> services = customException.getServices() == null ? new ArrayList<>() : customException.getServices();
+                    ServiceInfo serviceInfo = buildServiceInfo();
+                    services.add(serviceInfo);
+                    customException.setServices(services);
+                    log.error("{}", customException);
+                    return;
+                }
+
                 // for the exception not found in method's signature, print ERROR message in server's log.
                 log.error("Got unchecked and undeclared exception which called by {} . service: {}, method: {}, {}: {}, {}",
                         RpcContext.getContext().getRemoteHost(),
@@ -74,21 +87,7 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                     return;
                 }
                 // directly throw if it's JDK exception
-                String className = exception.getClass().getName();
                 if (className.startsWith("java.") || className.startsWith("javax.")) {
-                    return;
-                }
-
-                if (className.startsWith(SpringPropertyUtil.getValue("dubbo.provider.exception.package"))) {
-                    CustomException customException = (CustomException) appResponse.getException();
-                    if (customException.getMessage() == null) {
-                        customException.setMessage(SpringPropertyUtil.getValueWithDefault(customException.getCode(), "异常信息未定义"));
-                    }
-                    ArrayList<ServiceInfo> services = customException.getServices() == null ? new ArrayList<>() : customException.getServices();
-                    ServiceInfo serviceInfo = buildServiceInfo();
-                    services.add(serviceInfo);
-                    customException.setServices(services);
-                    log.error("{}", customException);
                     return;
                 }
 
