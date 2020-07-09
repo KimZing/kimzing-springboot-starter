@@ -2,6 +2,7 @@ package com.kimzing.web.advice;
 
 import com.kimzing.utils.exception.CustomException;
 import com.kimzing.utils.exception.ExceptionManager;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,6 +17,7 @@ import javax.validation.ValidationException;
  * @author KimZing - kimzing@163.com
  * @since 2019/12/6 16:53
  */
+@Slf4j
 @RestControllerAdvice
 public class ExceptionAdvice {
 
@@ -29,6 +31,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(CustomException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public CustomException handlerBusinessException(CustomException customException) {
+        log.error("{}", customException);
         return customException;
     }
 
@@ -40,6 +43,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CustomException handlerValidationException(ValidationException validationException) {
+        log.error("{}", validationException);
         // 如果是ConstraintViolationException，则可能出现多个异常信息
         if (validationException instanceof ConstraintViolationException) {
             ConstraintViolationException constraintViolationException =
@@ -61,6 +65,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public CustomException handlerUncatchException(Exception e) {
+        log.error("{}", e);
         return ExceptionManager.createByCodeAndMessage("SYSTEM", e.getMessage());
     }
 
