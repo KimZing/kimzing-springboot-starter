@@ -3,10 +3,10 @@ package com.kimzing.dubbo.filter;
 import com.kimzing.utils.exception.CustomException;
 import com.kimzing.utils.exception.ServiceInfo;
 import com.kimzing.utils.spring.SpringPropertyUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.common.logger.Logger;
-import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.rpc.*;
@@ -26,10 +26,9 @@ import java.util.ArrayList;
  * <li>Wrap the exception not introduced in API package into RuntimeException. Framework will serialize the outer exception but stringnize its cause in order to avoid of possible serialization problem on client side</li>
  * </ol>
  */
+@Slf4j
 @Activate(group = CommonConstants.PROVIDER)
 public class DubboExceptionFilter implements Filter, Filter.Listener {
-
-    private Logger logger = LoggerFactory.getLogger(DubboExceptionFilter.class);
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
@@ -60,7 +59,13 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                 }
 
                 // for the exception not found in method's signature, print ERROR message in server's log.
-                logger.error("Got unchecked and undeclared exception which called by " + RpcContext.getContext().getRemoteHost() + ". service: " + invoker.getInterface().getName() + ", method: " + invocation.getMethodName() + ", exception: " + exception.getClass().getName() + ": " + exception.getMessage());
+                log.error("Got unchecked and undeclared exception which called by {} . service: {}, method: {}, {}: {}, {}",
+                        RpcContext.getContext().getRemoteHost(),
+                        invoker.getInterface().getName(),
+                        invocation.getMethodName(),
+                        exception.getClass().getName(),
+                        exception.getMessage(),
+                        exception);
 
                 // directly throw if exception class and interface class are in the same jar file.
                 String serviceFile = ReflectUtils.getCodeBase(invoker.getInterface());
@@ -83,6 +88,7 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                     ServiceInfo serviceInfo = buildServiceInfo();
                     services.add(serviceInfo);
                     customException.setServices(services);
+                    log.error("{}", customException);
                     return;
                 }
 
@@ -94,19 +100,26 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                 // otherwise, wrap with RuntimeException and throw back to the client
                 appResponse.setException(new RuntimeException(StringUtils.toString(exception)));
             } catch (Throwable e) {
-                logger.warn("Fail to ExceptionFilter when called by " + RpcContext.getContext().getRemoteHost() + ". service: " + invoker.getInterface().getName() + ", method: " + invocation.getMethodName() + ", exception: " + e.getClass().getName() + ": " + e.getMessage(), e);
+                log.warn("Fail to ExceptionFilter when called by {}. service: {}, method: {}, exception: {}:{}, {}",
+                        RpcContext.getContext().getRemoteHost(),
+                        invoker.getInterface().getName(),
+                        invocation.getMethodName(),
+                        e.getClass().getName(),
+                        e.getMessage(),
+                        e);
             }
         }
     }
 
     @Override
     public void onError(Throwable e, Invoker<?> invoker, Invocation invocation) {
-        logger.error("Got unchecked and undeclared exception which called by " + RpcContext.getContext().getRemoteHost() + ". service: " + invoker.getInterface().getName() + ", method: " + invocation.getMethodName() + ", exception: " + e.getClass().getName() + ": " + e.getMessage(), e);
-    }
-
-    // For test purpose
-    public void setLogger(Logger logger) {
-        this.logger = logger;
+        log.error("Fail to ExceptionFilter when called by {}. service: {}, method: {}, exception: {}:{}, {}",
+                RpcContext.getContext().getRemoteHost(),
+                invoker.getInterface().getName(),
+                invocation.getMethodName(),
+                e.getClass().getName(),
+                e.getMessage(),
+                e);
     }
 
     private static ServiceInfo buildServiceInfo() {
