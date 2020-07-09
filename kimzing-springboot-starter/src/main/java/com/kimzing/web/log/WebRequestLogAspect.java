@@ -85,7 +85,8 @@ public class WebRequestLogAspect {
         StringBuilder sb = new StringBuilder();
         sb.append("\n================  Request Start  ================");
         sb.append(JsonUtil.beanToJson(logInfo, timePattern));
-        log.info("\n================  Request End  ================");
+        sb.append("\n================  Request End  ================");
+        log.info(sb.toString());
     };
 
     /**
