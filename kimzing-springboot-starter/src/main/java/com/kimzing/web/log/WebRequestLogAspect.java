@@ -1,6 +1,8 @@
-package com.kimzing.log;
+package com.kimzing.web.log;
 
 import com.kimzing.utils.date.DateUtil;
+import com.kimzing.utils.json.JsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -9,6 +11,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,13 +28,14 @@ import java.util.Map;
  * @author KimZing - kimzing@163.com
  * @since 2019/12/24 15:04
  */
+@Slf4j
 @Aspect
-public abstract class LogAspect {
+public class WebRequestLogAspect {
 
-    @Value("${base.log.time-pattern:yyyy-MM-dd HH:mm:ss:SSS}")
+    @Value("${yyyy-MM-dd HH:mm:ss:SSS}")
     private String timePattern;
 
-    @Pointcut("@annotation(com.kimzing.log.LogKim)")
+    @Pointcut("(@within(org.springframework.stereotype.Controller) || @within(org.springframework.web.bind.annotation.RestController))")
     public void logPointCut() {}
 
     /**
@@ -45,14 +51,14 @@ public abstract class LogAspect {
         Object result = joinPoint.proceed();
         long endTimeOfMethod = System.currentTimeMillis();
 
-        LogInfo.LogInfoBuilder builder = LogInfo.builder()
+        WebLogInfo.WebLogInfoBuilder builder = WebLogInfo.builder()
                 .result(result)
                 .startTime(DateUtil.formatUnixTimeToLocalDateTime(startTimeOfMethod, timePattern))
                 .endTime(DateUtil.formatUnixTimeToLocalDateTime(endTimeOfMethod, timePattern))
                 .elapsedTimeInMilliseconds(endTimeOfMethod - startTimeOfMethod);
         setLogAttributes(joinPoint, builder);
 
-        handleLogInfo(builder.build());
+        handleWebLogInfo(builder.build());
         return result;
     }
 
@@ -64,10 +70,10 @@ public abstract class LogAspect {
      */
     @AfterThrowing(pointcut = "logPointCut()", throwing = "throwable")
     public void throwExcetion(JoinPoint joinPoint, Throwable throwable) {
-        LogInfo.LogInfoBuilder builder = LogInfo.builder();
+        WebLogInfo.WebLogInfoBuilder builder = WebLogInfo.builder();
         setLogAttributes(joinPoint, builder);
         builder.throwable(throwable);
-        handleLogInfo(builder.build());
+        handleWebLogInfo(builder.build());
     }
 
     /**
@@ -75,7 +81,11 @@ public abstract class LogAspect {
      *
      * @param logInfo
      */
-    public abstract void handleLogInfo(LogInfo logInfo);
+    public void handleWebLogInfo(WebLogInfo logInfo) {
+        log.info("\n================  Request Start  ================\n");
+        log.info(JsonUtil.beanToJson(logInfo, timePattern));
+        log.info("\n================  Request End  ================\n");
+    };
 
     /**
      * 对日志信息进行解析并添加进日志信息中
@@ -83,11 +93,14 @@ public abstract class LogAspect {
      * @param joinPoint
      * @param builder
      */
-    private void setLogAttributes(JoinPoint joinPoint, LogInfo.LogInfoBuilder builder) {
+    private void setLogAttributes(JoinPoint joinPoint, WebLogInfo.WebLogInfoBuilder builder) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        String url = (requestAttributes == null) ? null :
+                ((ServletRequestAttributes) requestAttributes).getRequest().getRequestURI();
         builder.className(getClassName(joinPoint))
                 .methodName(getMethodName(signature))
-                .desc(getMethodDesc(signature))
+                .url(url)
                 .params(getParams(joinPoint));
     }
 
@@ -105,17 +118,6 @@ public abstract class LogAspect {
                 .forEach(arg -> argsMap.put(arg.getClass().getSimpleName(), arg));
 
         return argsMap;
-    }
-
-    /**
-     * 获取方法描述
-     *
-     * @param signature
-     * @return
-     */
-    private String getMethodDesc(MethodSignature signature) {
-        LogKim annotation = signature.getMethod().getAnnotation(LogKim.class);
-        return annotation.desc();
     }
 
     /**

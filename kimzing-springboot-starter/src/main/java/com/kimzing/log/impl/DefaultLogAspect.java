@@ -6,7 +6,7 @@ import com.kimzing.utils.log.LogUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 默认日志切面处理类.
+ * 默认日志信息处理类.
  *
  * @author KimZing - kimzing@163.com
  * @since 2019/12/26 11:57

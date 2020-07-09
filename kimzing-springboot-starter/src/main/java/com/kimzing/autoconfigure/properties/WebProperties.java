@@ -33,6 +33,11 @@ public class WebProperties {
     private AdviceProperties advice;
 
     /**
+     * 请求日志打印
+     */
+    private LogProperties log;
+
+    /**
      * 跨域配置
      */
     private CorsProperties cors = new CorsProperties();
@@ -55,6 +60,15 @@ public class WebProperties {
     public static class AdviceProperties {
         /**
          * 异常Advice开关
+         */
+        private Boolean enabled;
+
+    }
+
+    @Data
+    public static class LogProperties {
+        /**
+         * 日志Advice开关
          */
         private Boolean enabled;
 

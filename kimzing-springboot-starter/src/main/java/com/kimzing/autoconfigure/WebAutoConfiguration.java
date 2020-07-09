@@ -4,6 +4,7 @@ import com.kimzing.autoconfigure.properties.WebProperties;
 import com.kimzing.web.advice.ExceptionAdvice;
 import com.kimzing.web.advice.ResultAdvice;
 import com.kimzing.web.info.KimZingInfoController;
+import com.kimzing.web.log.WebRequestLogAspect;
 import com.kimzing.web.resolver.MethodParamResolverConfiguration;
 import com.kimzing.web.resolver.json.JsonParamResolver;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -81,6 +82,18 @@ public class WebAutoConfiguration {
             name = "enabled", havingValue = "true")
     public ExceptionAdvice exceptionAdvice() {
         return new ExceptionAdvice();
+    }
+
+    /**
+     * 请求日志打印
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnProperty(prefix = "kimzing.web.log",
+            name = "enabled", havingValue = "true", matchIfMissing = true)
+    public WebRequestLogAspect logAdvice() {
+        return new WebRequestLogAspect();
     }
 
 

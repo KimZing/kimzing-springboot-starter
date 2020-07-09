@@ -18,6 +18,9 @@ kimzing:
     advice:
       # 是否启用异常拦截(默认false)
       enabled: true
+    log:
+      # 是否启用请求日志打印(默认true)
+      enabled: true
     cors:
       # 是否开启跨域支持(默认true)
       enabled: true
