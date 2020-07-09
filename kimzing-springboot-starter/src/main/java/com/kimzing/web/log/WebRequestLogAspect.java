@@ -82,9 +82,10 @@ public class WebRequestLogAspect {
      * @param logInfo
      */
     public void handleWebLogInfo(WebLogInfo logInfo) {
-        log.info("\n================  Request Start  ================\n");
-        log.info(JsonUtil.beanToJson(logInfo, timePattern));
-        log.info("\n================  Request End  ================\n");
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n================  Request Start  ================");
+        sb.append(JsonUtil.beanToJson(logInfo, timePattern));
+        log.info("\n================  Request End  ================");
     };
 
     /**
