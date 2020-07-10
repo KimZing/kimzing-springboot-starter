@@ -15,7 +15,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,11 +118,12 @@ public class WebRequestLogAspect {
      */
     private Map<String, Object> getParams(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
-
         Map<String, Object> argsMap = new HashMap<>();
-        if (args != null && args.length > 0) {
-            Arrays.asList(args).stream()
-                    .forEach(arg -> argsMap.put(arg.getClass().getSimpleName(), arg));
+
+        for (Object arg : args) {
+            if (arg != null) {
+                argsMap.put(arg.getClass().getSimpleName(), arg);
+            }
         }
         return argsMap;
     }
