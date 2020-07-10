@@ -121,9 +121,10 @@ public class WebRequestLogAspect {
         Object[] args = joinPoint.getArgs();
 
         Map<String, Object> argsMap = new HashMap<>();
-        Arrays.asList(args).stream()
-                .forEach(arg -> argsMap.put(arg.getClass().getSimpleName(), arg));
-
+        if (args != null && args.length > 0) {
+            Arrays.asList(args).stream()
+                    .forEach(arg -> argsMap.put(arg.getClass().getSimpleName(), arg));
+        }
         return argsMap;
     }
 
