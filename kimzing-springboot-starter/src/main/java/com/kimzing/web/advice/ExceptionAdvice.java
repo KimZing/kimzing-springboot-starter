@@ -66,7 +66,9 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public CustomException handlerUncatchException(Exception e) {
         log.error("{}", e);
-        return ExceptionManager.createByCodeAndMessage("SYSTEM", e.getMessage());
+        // 当message为null时，获取当前异常名称作为异常信息，方便排查
+        String message = e.getMessage() == null ? e.getClass().getName() : e.getMessage();
+        return ExceptionManager.createByCodeAndMessage("SYSTEM", message);
     }
 
 }
