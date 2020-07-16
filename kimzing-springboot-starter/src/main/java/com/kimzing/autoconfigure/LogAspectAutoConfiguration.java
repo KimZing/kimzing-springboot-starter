@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(prefix = "kimzing.log", name = "enabled",
         havingValue = "true")
 @ConditionalOnClass(Aspect.class)
-@ConditionalOnMissingBean(LogAspect.class)
 public class LogAspectAutoConfiguration {
 
     /**
@@ -32,6 +31,7 @@ public class LogAspectAutoConfiguration {
      * @return
      */
     @Bean
+    @ConditionalOnMissingBean(LogAspect.class)
     public LogAspect logAspect(LogProperties logProperties) {
         DefaultLogAspect defaultLogAspect = new DefaultLogAspect();
         return defaultLogAspect;

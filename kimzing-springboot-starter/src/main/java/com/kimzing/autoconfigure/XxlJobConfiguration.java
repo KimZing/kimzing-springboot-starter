@@ -35,11 +35,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Slf4j
 @Configuration
+@ConditionalOnClass(value = XxlJobSpringExecutor.class)
 @EnableConfigurationProperties({XxlJobProperties.class})
 public class XxlJobConfiguration {
 
     @Bean
-    @ConditionalOnClass(value = XxlJobSpringExecutor.class)
     @ConditionalOnMissingBean(XxlJobSpringExecutor.class)
     @ConditionalOnProperty(prefix = "kimzing.xxljob",
             name = "enabled", havingValue = "true")
