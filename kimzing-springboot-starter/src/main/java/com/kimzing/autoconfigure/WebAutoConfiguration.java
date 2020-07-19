@@ -15,9 +15,13 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 /**
  * RestTemplate自动配置.
@@ -70,6 +74,19 @@ public class WebAutoConfiguration {
             name = "enabled", havingValue = "true")
     public ResultAdvice resultAdvice() {
         return new ResultAdvice();
+    }
+
+    /**
+     * 将Converter的顺序进行调整，否则全局结果处理在处理字符串返回时会报类型转换错误，因为会经过StringConverter
+     */
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+                converters.add(0, new MappingJackson2HttpMessageConverter());
+            }
+        };
     }
 
     /**
