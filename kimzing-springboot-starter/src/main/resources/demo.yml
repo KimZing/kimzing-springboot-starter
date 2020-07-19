@@ -1,5 +1,12 @@
 # 基本属性配置
 kimzing:
+  redis:
+    # 是否开启自定义redis模板
+    enabled: true
+    # redis服务级别统一前缀
+    prefix: ${spring.application.name}
+    # redis序列化与反序列化的时间格式
+    time-pattern: yyyy-MM-dd HH:mm:ss
   log:
     # 方法日志开关(默认false)
     enabled: false
