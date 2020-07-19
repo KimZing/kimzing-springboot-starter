@@ -6,4 +6,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.kimzing.autoconfigure.MyBatisPlusConfiguration,\
   com.kimzing.autoconfigure.SwaggerConfiguration,\
   com.kimzing.autoconfigure.XxlJobConfiguration, \
-  com.kimzing.autoconfigure.KFCRedisTemplateConfiguration
+  com.kimzing.autoconfigure.KFCRedisTemplateConfiguration, \
+  com.kimzing.autoconfigure.SentinelAutoConfiguration

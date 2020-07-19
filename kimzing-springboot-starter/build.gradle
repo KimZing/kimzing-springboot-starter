@@ -23,6 +23,7 @@ dependencies {
     compileOnly 'com.github.xiaoymin:knife4j-spring-boot-starter:2.0.4'
     compileOnly 'org.apache.dubbo:dubbo:2.7.6'
     compileOnly 'org.redisson:redisson-spring-boot-starter:3.13.1'
+    compileOnly 'com.alibaba.csp:sentinel-spring-webmvc-adapter:1.7.2'
 
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

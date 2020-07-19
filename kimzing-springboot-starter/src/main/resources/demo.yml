@@ -1,5 +1,14 @@
 # 基本属性配置
 kimzing:
+  sentinel:
+    enabled: true
+    exceptionHandler:
+      # 异常拦截开关
+      enabled: true
+      # 提示码
+      code: SECURITY
+      # 提示信息
+      message: 请求已被安全管控系统拦截，请联系管理员!
   redis:
     # 是否开启自定义redis模板
     enabled: true
