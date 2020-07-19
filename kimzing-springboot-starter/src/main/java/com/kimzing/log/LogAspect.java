@@ -10,9 +10,8 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 /**
  * 日志切面基础类.
@@ -98,11 +97,29 @@ public abstract class LogAspect {
      * @return
      */
     private Map<String, Object> getParams(JoinPoint joinPoint) {
-        Object[] args = joinPoint.getArgs();
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Annotation[][] parameterAnnotations = signature.getMethod().getParameterAnnotations();
 
+        // 获取有哪些位置的参数添加了@IgnoreLogParam注解
+        List<Integer> ignoreParamIndex = new ArrayList<>();
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            if (parameterAnnotations[i] != null && parameterAnnotations[i].length > 0) {
+                for (int j = 0; j < parameterAnnotations[i].length; j++) {
+                    if (parameterAnnotations[i][j].annotationType() == LogIgnore.class) {
+                        ignoreParamIndex.add(i);
+                    }
+                }
+            }
+        }
+
+        Object[] args = joinPoint.getArgs();
         Map<String, Object> argsMap = new HashMap<>();
-        Arrays.asList(args).stream()
-                .forEach(arg -> argsMap.put(arg.getClass().getSimpleName(), arg));
+
+        for (int i = 0; i < args.length; i++) {
+            if (!ignoreParamIndex.contains(i) && args[i] != null) {
+                argsMap.put(args[i].getClass().getSimpleName(), args[i]);
+            }
+        }
 
         return argsMap;
     }

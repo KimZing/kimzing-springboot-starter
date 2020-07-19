@@ -1,5 +1,6 @@
 package com.kimzing.web.log;
 
+import com.kimzing.log.LogIgnore;
 import com.kimzing.utils.date.DateUtil;
 import com.kimzing.utils.json.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,10 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -117,14 +121,30 @@ public class WebRequestLogAspect {
      * @return
      */
     private Map<String, Object> getParams(JoinPoint joinPoint) {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Annotation[][] parameterAnnotations = signature.getMethod().getParameterAnnotations();
+
+        // 获取有哪些位置的参数添加了@IgnoreLogParam注解
+        List<Integer> ignoreParamIndex = new ArrayList<>();
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            if (parameterAnnotations[i] != null && parameterAnnotations[i].length > 0) {
+                for (int j = 0; j < parameterAnnotations[i].length; j++) {
+                    if (parameterAnnotations[i][j].annotationType() == LogIgnore.class) {
+                        ignoreParamIndex.add(i);
+                    }
+                }
+            }
+        }
+
         Object[] args = joinPoint.getArgs();
         Map<String, Object> argsMap = new HashMap<>();
 
-        for (Object arg : args) {
-            if (arg != null) {
-                argsMap.put(arg.getClass().getSimpleName(), arg);
+        for (int i = 0; i < args.length; i++) {
+            if (!ignoreParamIndex.contains(i) && args[i] != null) {
+                argsMap.put(args[i].getClass().getSimpleName(), args[i]);
             }
         }
+
         return argsMap;
     }
 
