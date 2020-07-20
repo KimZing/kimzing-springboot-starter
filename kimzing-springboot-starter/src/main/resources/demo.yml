@@ -1,7 +1,24 @@
 # 基本属性配置
 kimzing:
-  sentinel:
+  minio:
+    # 是否启用minio配置(默认false)
     enabled: true
+    # minio服务地址
+    url: http://localhost:9000
+    accessKey: admin
+    secretKey: 1234567890
+    # 存储桶名称
+    bucket: kimzing
+    # 统一对象前缀
+    prefix: images/images-
+    # 前缀类型
+    prefixType: time
+    # 前缀时间的格式
+    timePattern: yyyy-MM-dd-HH-mm-
+  sentinel:
+    # 是否启用sentinel相关配置(默认true)
+    enabled: true
+    # 是否开启异常包装(默认true)
     exceptionHandler:
       # 异常拦截开关
       enabled: true

@@ -27,7 +27,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 public class KFCRedisTemplateConfiguration {
 
     @Bean
-    @ConditionalOnProperty(value = "kimzing.redis.enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "kimzing.redis", name = "enabled", havingValue = "true", matchIfMissing = true)
     public KFCRedisTemplate kfcRedisTemplate(RedissonClient redissonClient,
                                              KFCRedisTemplateProperties kfcRedisTemplateProperties,
                                              RedisConnectionFactory redisConnectionFactory) {
