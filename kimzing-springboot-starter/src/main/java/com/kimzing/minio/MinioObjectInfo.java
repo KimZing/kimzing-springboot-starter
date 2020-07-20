@@ -26,7 +26,7 @@ public class MinioObjectInfo {
     /**
      * 保存的文件名
      */
-    private String filename;
+    private String name;
 
     /**
      * 数据类型

@@ -131,18 +131,18 @@ public class MinioService {
             headers.put("Content-Type", contentType);
             PutObjectOptions options = new PutObjectOptions(inputStream.available(), -1);
             options.setHeaders(headers);
-            String wrapFileName = getPath(path) + getPrefix() + fileName;
+            fileName = getPath(path) + getPrefix() + fileName;
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(bucket)
-                    .object(wrapFileName)
+                    .object(fileName)
                     .contentType(contentType)
                     .stream(inputStream, inputStream.available(), -1)
                     .build());
-            String url = minioClient.getObjectUrl(bucket, wrapFileName);
+            String url = minioClient.getObjectUrl(bucket, fileName);
             return new MinioObjectInfo()
                     .setBucket(bucket)
                     .setPath(path)
-                    .setFilename(fileName)
+                    .setName(fileName)
                     .setContentType(contentType)
                     .setUrl(url);
         } catch (Exception e) {
