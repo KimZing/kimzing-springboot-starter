@@ -7,8 +7,6 @@ kimzing:
     url: http://localhost:9000
     accessKey: admin
     secretKey: 1234567890
-    # 存储桶名称
-    bucket: kimzing
     # 统一对象前缀
     prefix: images/images-
     # 前缀类型

@@ -34,11 +34,6 @@ public class MinioProperties {
     private String secretKey;
 
     /**
-     * 存储桶
-     */
-    private String bucket;
-
-    /**
      * 统一前缀，与prefixType互斥，prefix级别优先
      */
     private String prefix;

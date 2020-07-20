@@ -1,18 +1,14 @@
 package com.kimzing.minio;
 
+import com.kimzing.autoconfigure.properties.MinioProperties;
 import com.kimzing.utils.exception.ExceptionManager;
 import com.kimzing.utils.log.LogUtil;
 import com.kimzing.utils.string.StringUtil;
 import io.minio.*;
-import io.minio.errors.*;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
-import com.kimzing.autoconfigure.properties.MinioProperties;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -32,15 +28,26 @@ public class MinioService {
 
     private MinioProperties minioProperties;
 
-    public MinioService(MinioClient minioClient, MinioProperties minioProperties) throws IOException, InvalidKeyException, InvalidResponseException, BucketPolicyTooLargeException, NoSuchAlgorithmException, ServerException, InternalException, XmlParserException, InvalidBucketNameException, InsufficientDataException, ErrorResponseException {
+    public MinioService(MinioClient minioClient, MinioProperties minioProperties) {
         this.minioClient = minioClient;
         this.minioProperties = minioProperties;
-        // 初始化存储桶
-        if (!StringUtil.isBlank(minioProperties.getBucket())) {
-            makeBucket(minioProperties.getBucket());
-        }
     }
 
+    /**
+     * 判断存储桶是否存在
+     *
+     * @param bucket
+     */
+    public Boolean bucketExists(String bucket) {
+        try {
+            boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder()
+                    .bucket(bucket)
+                    .build());
+            return bucketExists;
+        } catch (Exception e) {
+            throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "判断存储桶是否存在时发生异常:" + e.getMessage());
+        }
+    }
 
     /**
      * 创建存储桶
@@ -58,6 +65,7 @@ public class MinioService {
                     .build());
             if (bucketExists) {
                 LogUtil.info("存储桶[{}]已存在", bucket);
+                return;
             } else {
                 minioClient.makeBucket(MakeBucketArgs.builder()
                         .bucket(bucket)
@@ -84,50 +92,30 @@ public class MinioService {
     }
 
     /**
-     * 通过MultipartFile上传文件， 使用服务配置的存储桶
-     *
-     * @return
-     */
-    public MinioObjectInfo upload(MultipartFile multipartFile) {
-        return upload(minioProperties.getBucket(), multipartFile);
-    }
-
-    /**
      * 通过MultipartFile上传文件
      *
-     * @param bucket
+     * @param bucket 存储桶
      * @return
      */
-    public MinioObjectInfo upload(String bucket, MultipartFile multipartFile) {
+    public MinioObjectInfo upload(String bucket, String path, MultipartFile multipartFile) {
         try {
-            return upload(bucket, multipartFile.getOriginalFilename(), multipartFile.getContentType(), multipartFile.getInputStream());
+            return upload(bucket, path, multipartFile.getOriginalFilename(), multipartFile.getContentType(), multipartFile.getInputStream());
         } catch (IOException e) {
-            throw ExceptionManager.createByCodeAndMessage("UPLOAD", "获取上传文件流异常");
+            throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "获取上传文件流异常");
         }
     }
 
     /**
-     * 上传文件，使用服务配置的存储桶
-     *
-     * @param fileName
-     * @param contentType
-     * @param inputStream
-     * @return
-     */
-    public MinioObjectInfo upload(String fileName, String contentType, InputStream inputStream) {
-        return upload(minioProperties.getBucket(), fileName, contentType,  inputStream);
-    }
-
-    /**
-     * 上传文件，最全的方法，需要补全各个参数,
+     * 上传文件
      *
      * @param bucket 存储桶名称
+     * @param path 相对于存储桶的路径  可以为空
      * @param fileName 存储对象名
      * @param contentType 文件类型
      * @param inputStream 文件流
      * @return
      */
-    public MinioObjectInfo upload(String bucket, String fileName, String contentType, InputStream inputStream) {
+    public MinioObjectInfo upload(String bucket, String path, String fileName, String contentType, InputStream inputStream) {
         if (StringUtil.isBlank(bucket)) {
             throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "存储桶不能为空");
         }
@@ -143,22 +131,35 @@ public class MinioService {
             headers.put("Content-Type", contentType);
             PutObjectOptions options = new PutObjectOptions(inputStream.available(), -1);
             options.setHeaders(headers);
-            String name = getPrefix() + fileName;
+            fileName = getPath(path) + getPrefix() + fileName;
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(bucket)
-                    .object(name)
+                    .object(fileName)
                     .contentType(contentType)
                     .stream(inputStream, inputStream.available(), -1)
                     .build());
-            String url = minioClient.getObjectUrl(bucket, name);
+            String url = minioClient.getObjectUrl(bucket, fileName);
             return new MinioObjectInfo()
                     .setBucket(bucket)
                     .setContentType(contentType)
-                    .setName(name)
+                    .setName(fileName)
                     .setUrl(url);
         } catch (Exception e) {
             throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "上传文件异常:" + e.getMessage());
         }
+    }
+
+    private String getPath(String path) {
+        if (StringUtil.isBlank(path)) {
+            return "";
+        }
+        if (!path.startsWith("/")) {
+            path =  "/"+path;
+        }
+        if (!path.endsWith("/")) {
+            path =  path + "/";
+        }
+        return path;
     }
 
     /**
@@ -198,7 +199,7 @@ public class MinioService {
         }
         if (!StringUtil.isBlank(minioProperties.getPrefixType()) && minioProperties.getPrefixType().equals("time")) {
             if (StringUtil.isBlank(minioProperties.getTimePattern())) {
-                return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss"));
+                return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             }
             return LocalDateTime.now().format(DateTimeFormatter.ofPattern(minioProperties.getTimePattern()));
         }
