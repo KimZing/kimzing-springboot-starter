@@ -59,19 +59,17 @@ public class MinioService {
             throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "存储桶名称不能为空");
         }
 
+        Boolean exists = bucketExists(bucket);
+        if (exists) {
+            LogUtil.info("存储桶[{}]已存在", bucket);
+            return;
+        }
+
         try {
-            boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder()
+            minioClient.makeBucket(MakeBucketArgs.builder()
                     .bucket(bucket)
                     .build());
-            if (bucketExists) {
-                LogUtil.info("存储桶[{}]已存在", bucket);
-                return;
-            } else {
-                minioClient.makeBucket(MakeBucketArgs.builder()
-                        .bucket(bucket)
-                        .build());
-                LogUtil.info("存储桶[{}]创建成功", bucket);
-            }
+            LogUtil.info("存储桶[{}]创建成功", bucket);
         } catch (Exception e) {
             throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "存储桶创建异常:" + e.getMessage());
         }
@@ -79,6 +77,7 @@ public class MinioService {
 
     /**
      * 删除存储桶
+     *
      * @param bucket
      */
     public void removeBucket(String bucket) {
@@ -108,9 +107,9 @@ public class MinioService {
     /**
      * 上传文件
      *
-     * @param bucket 存储桶名称
-     * @param path 相对于存储桶的路径  可以为空
-     * @param fileName 存储对象名
+     * @param bucket      存储桶名称
+     * @param path        相对于存储桶的路径  可以为空
+     * @param fileName    存储对象名
      * @param contentType 文件类型
      * @param inputStream 文件流
      * @return
@@ -155,16 +154,17 @@ public class MinioService {
             return "";
         }
         if (!path.startsWith("/")) {
-            path =  "/"+path;
+            path = "/" + path;
         }
         if (!path.endsWith("/")) {
-            path =  path + "/";
+            path = path + "/";
         }
         return path;
     }
 
     /**
      * 删除存储对象
+     *
      * @param bucket
      * @param name
      */
@@ -206,8 +206,6 @@ public class MinioService {
         }
         return "";
     }
-
-
 
 
 }
