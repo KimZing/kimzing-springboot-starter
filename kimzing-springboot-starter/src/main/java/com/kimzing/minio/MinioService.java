@@ -1,6 +1,7 @@
 package com.kimzing.minio;
 
 import com.kimzing.utils.exception.ExceptionManager;
+import com.kimzing.utils.log.LogUtil;
 import com.kimzing.utils.string.StringUtil;
 import io.minio.*;
 import io.minio.errors.*;
@@ -23,7 +24,6 @@ import java.util.Map;
  * @author KimZing - kimzing@163.com
  * @since 2020/7/20 01:10
  */
-@Slf4j
 public class MinioService {
 
     public static final String MINIO_ERROR_CODE = "MINIO";
@@ -57,12 +57,12 @@ public class MinioService {
                     .bucket(bucket)
                     .build());
             if (bucketExists) {
-                log.info("存储桶[{}]已存在", bucket);
+                LogUtil.info("存储桶[{}]已存在", bucket);
             } else {
                 minioClient.makeBucket(MakeBucketArgs.builder()
                         .bucket(bucket)
                         .build());
-                log.info("存储桶[{}]创建成功", bucket);
+                LogUtil.info("存储桶[{}]创建成功", bucket);
             }
         } catch (Exception e) {
             throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "存储桶创建异常:" + e.getMessage());

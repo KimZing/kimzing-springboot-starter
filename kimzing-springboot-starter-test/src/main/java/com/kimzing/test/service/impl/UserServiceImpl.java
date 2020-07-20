@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResult find(Long id) {
         if (id < 0) {
-            throw ExceptionManager.create("用户ID异常");
+            throw ExceptionManager.createByCodeAndMessage("USER_1003", "用户ID异常");
         }
         UserPO userPO = userRepository.find(id);
         UserDTO userDTO = BeanUtil.mapperBean(userPO, UserDTO.class);

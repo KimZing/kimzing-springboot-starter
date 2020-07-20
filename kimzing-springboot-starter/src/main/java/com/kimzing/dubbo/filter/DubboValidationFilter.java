@@ -19,8 +19,8 @@ package com.kimzing.dubbo.filter;
 import com.kimzing.utils.exception.CustomException;
 import com.kimzing.utils.exception.ExceptionManager;
 import com.kimzing.utils.exception.ServiceInfo;
+import com.kimzing.utils.log.LogUtil;
 import com.kimzing.utils.spring.SpringPropertyUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.common.utils.ConfigUtils;
 import org.apache.dubbo.rpc.*;
@@ -30,7 +30,6 @@ import org.apache.dubbo.validation.Validator;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
-
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -67,7 +66,6 @@ import static org.apache.dubbo.common.constants.FilterConstants.VALIDATION_KEY;
  * @see Filter
  * @see org.apache.dubbo.validation.support.AbstractValidation
  */
-@Slf4j
 @Activate(group = {CONSUMER, PROVIDER}, value = VALIDATION_KEY, order = 1)
 public class DubboValidationFilter implements Filter {
 
@@ -110,7 +108,7 @@ public class DubboValidationFilter implements Filter {
                     ServiceInfo serviceInfo = buildServiceInfo();
                     services.add(serviceInfo);
                     customException.setServices(services);
-                    log.error("{}", customException);
+                    LogUtil.error("{}", customException);
                     return AsyncRpcResult.newDefaultAsyncResult(customException, invocation);
                 }
 

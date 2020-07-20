@@ -2,8 +2,8 @@ package com.kimzing.dubbo.filter;
 
 import com.kimzing.utils.exception.CustomException;
 import com.kimzing.utils.exception.ServiceInfo;
+import com.kimzing.utils.log.LogUtil;
 import com.kimzing.utils.spring.SpringPropertyUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.common.constants.CommonConstants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.common.utils.ReflectUtils;
@@ -25,7 +25,6 @@ import java.util.ArrayList;
  * <li>Wrap the exception not introduced in API package into RuntimeException. Framework will serialize the outer exception but stringnize its cause in order to avoid of possible serialization problem on client side</li>
  * </ol>
  */
-@Slf4j
 @Activate(group = CommonConstants.PROVIDER)
 public class DubboExceptionFilter implements Filter, Filter.Listener {
 
@@ -67,12 +66,12 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                     ServiceInfo serviceInfo = buildServiceInfo();
                     services.add(serviceInfo);
                     customException.setServices(services);
-                    log.error("{}", customException);
+                    LogUtil.error("{}", customException);
                     return;
                 }
 
                 // for the exception not found in method's signature, print ERROR message in server's log.
-                log.error("Got unchecked and undeclared exception which called by {} . service: {}, method: {}, {}: {}, {}",
+                LogUtil.error("Got unchecked and undeclared exception which called by {} . service: {}, method: {}, {}: {}, {}",
                         RpcContext.getContext().getRemoteHost(),
                         invoker.getInterface().getName(),
                         invocation.getMethodName(),
@@ -99,7 +98,7 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                 // otherwise, wrap with RuntimeException and throw back to the client
                 appResponse.setException(new RuntimeException(StringUtils.toString(exception)));
             } catch (Throwable e) {
-                log.warn("Fail to ExceptionFilter when called by {}. service: {}, method: {}, exception: {}:{}, {}",
+                LogUtil.warn("Fail to ExceptionFilter when called by {}. service: {}, method: {}, exception: {}:{}, {}",
                         RpcContext.getContext().getRemoteHost(),
                         invoker.getInterface().getName(),
                         invocation.getMethodName(),
@@ -112,7 +111,7 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
 
     @Override
     public void onError(Throwable e, Invoker<?> invoker, Invocation invocation) {
-        log.error("Fail to ExceptionFilter when called by {}. service: {}, method: {}, exception: {}:{}, {}",
+        LogUtil.error("Fail to ExceptionFilter when called by {}. service: {}, method: {}, exception: {}:{}, {}",
                 RpcContext.getContext().getRemoteHost(),
                 invoker.getInterface().getName(),
                 invocation.getMethodName(),

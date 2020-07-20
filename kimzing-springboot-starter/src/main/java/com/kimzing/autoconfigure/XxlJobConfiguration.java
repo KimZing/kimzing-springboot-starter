@@ -1,6 +1,7 @@
 package com.kimzing.autoconfigure;
 
 import com.kimzing.autoconfigure.properties.XxlJobProperties;
+import com.kimzing.utils.log.LogUtil;
 import com.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -33,7 +34,6 @@ import org.springframework.context.annotation.Configuration;
  * @author KimZing - kimzing@163.com
  * @since 2020/7/17 01:20
  */
-@Slf4j
 @Configuration
 @ConditionalOnClass(value = XxlJobSpringExecutor.class)
 @EnableConfigurationProperties({XxlJobProperties.class})
@@ -44,7 +44,7 @@ public class XxlJobConfiguration {
     @ConditionalOnProperty(prefix = "kimzing.xxljob",
             name = "enabled", havingValue = "true")
     public XxlJobSpringExecutor xxlJobExecutor(XxlJobProperties xxlJobProperties) {
-        log.info(">>>>>>>>>>> xxl-job config init.");
+        LogUtil.info(">>>>>>>>>>> xxl-job config init.");
         XxlJobSpringExecutor xxlJobSpringExecutor = new XxlJobSpringExecutor();
         xxlJobSpringExecutor.setAdminAddresses(xxlJobProperties.getAdminAddresses());
         xxlJobSpringExecutor.setAccessToken(xxlJobProperties.getAccessToken());

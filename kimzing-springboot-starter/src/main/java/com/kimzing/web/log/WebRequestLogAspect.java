@@ -3,7 +3,7 @@ package com.kimzing.web.log;
 import com.kimzing.log.LogIgnore;
 import com.kimzing.utils.date.DateUtil;
 import com.kimzing.utils.json.JsonUtil;
-import lombok.extern.slf4j.Slf4j;
+import com.kimzing.utils.log.LogUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -31,7 +31,6 @@ import java.util.Map;
  * @author KimZing - kimzing@163.com
  * @since 2019/12/24 15:04
  */
-@Slf4j
 @Aspect
 public class WebRequestLogAspect {
 
@@ -88,11 +87,18 @@ public class WebRequestLogAspect {
      * @param logInfo
      */
     public void handleWebLogInfo(WebLogInfo logInfo) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\n================  Request Start  ================\n");
-        sb.append(JsonUtil.beanToJson(logInfo, timePattern));
-        sb.append("\n================  Request End  ================");
-        log.info(sb.toString());
+        // 为了防止日志打印出错，将内部错误捕获，防止影响主业务
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("\n================  Request Start  ================\n");
+            sb.append(JsonUtil.beanToJson(logInfo, timePattern));
+            sb.append("\n================  Request End  ================");
+            LogUtil.info(sb.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.warn("WEB切面日志打印异常: [{}]", e.getMessage());
+        }
+
     }
 
     ;

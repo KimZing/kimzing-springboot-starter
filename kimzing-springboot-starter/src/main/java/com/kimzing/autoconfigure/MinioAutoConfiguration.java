@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Configuration;
  * @author KimZing - kimzing@163.com
  * @since 2020/7/20 01:14
  */
-@Slf4j
 @Configuration
 @EnableConfigurationProperties({MinioProperties.class})
 @ConditionalOnProperty(prefix = "kimzing.minio", name = "enabled", havingValue = "true", matchIfMissing = false)

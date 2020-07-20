@@ -2,7 +2,7 @@ package com.kimzing.redis;
 
 import com.kimzing.utils.exception.ExceptionManager;
 import com.kimzing.utils.json.JsonUtil;
-import lombok.extern.slf4j.Slf4j;
+import com.kimzing.utils.log.LogUtil;
 import org.redisson.api.RBloomFilter;
 import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
@@ -18,7 +18,6 @@ import java.util.List;
  * @author KimZing - kimzing@163.com
  * @since 2020/7/19 00:02
  */
-@Slf4j
 public class KFCRedisTemplate extends RedisTemplate {
 
     private String dateFormate;
@@ -308,10 +307,10 @@ public class KFCRedisTemplate extends RedisTemplate {
         // 查看是否已存在布隆过滤器
         RBloomFilter<T> exsitBloomFilter = redissonClient.getBloomFilter(bloomKey);
         if (exsitBloomFilter != null) {
-            log.warn("该布隆过滤器已经初始化，无法生效对应的参数设置~");
+            LogUtil.warn("该布隆过滤器已经初始化，无法生效对应的参数设置~");
             return exsitBloomFilter;
         }
-        log.error("初始化布隆过滤器失败！ bloomKey:[{}]", bloomKey);
+        LogUtil.error("初始化布隆过滤器失败！ bloomKey:[{}]", bloomKey);
         return null;
     }
 

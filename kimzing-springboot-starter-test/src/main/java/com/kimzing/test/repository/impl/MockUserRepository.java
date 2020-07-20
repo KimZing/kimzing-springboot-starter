@@ -35,7 +35,7 @@ public class MockUserRepository {
 
         boolean isExist = users.containsKey(userPO.getId());
         if (isExist) {
-            throw ExceptionManager.create("1001");
+            throw ExceptionManager.createByCodeAndMessage("USER_1001", "用户信息已存在");
         }
 
         fillUserTimeByOperation(userPO, "CREATE");
@@ -50,7 +50,7 @@ public class MockUserRepository {
     public void update(UserPO userPO) {
         boolean isNullId = Objects.isNull(userPO.getId());
         if (isNullId) {
-            throw ExceptionManager.create("1002");
+            throw ExceptionManager.createByCodeAndMessage("USER_1002", "用户ID不能为空");
         }
 
         fillUserTimeByOperation(userPO, "UPDATE");

@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author KimZing - kimzing@163.com
  * @since 2019/12/26 11:57
  */
-@Slf4j
 public class DefaultLogAspect extends LogAspect {
 
     /**
@@ -21,6 +20,12 @@ public class DefaultLogAspect extends LogAspect {
      */
     @Override
     public void handleLogInfo(LogInfo logInfo) {
-        LogUtil.info("[{}]", logInfo);
+        // 为了防止日志打印出错，将内部错误捕获，防止影响主业务
+        try {
+            LogUtil.info("[{}]", logInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.warn("切面日志打印异常: [{}]", e.getMessage());
+        }
     }
 }
