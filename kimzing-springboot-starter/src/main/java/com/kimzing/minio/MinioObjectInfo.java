@@ -14,23 +14,30 @@ import lombok.experimental.Accessors;
 public class MinioObjectInfo {
 
     /**
-     * 保存的文件名
-     */
-    private String name;
-
-    /**
-     * 下载浏览url
-     */
-    private String url;
-
-    /**
      * 存储桶名称
      */
     private String bucket;
 
     /**
+     * 存储路径
+     */
+    private String path;
+
+    /**
+     * 保存的文件名
+     */
+    private String filename;
+
+    /**
      * 数据类型
      */
     private String contentType;
+
+    /**
+     * url
+     */
+    private String url;
+
+
 
 }

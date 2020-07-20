@@ -131,18 +131,19 @@ public class MinioService {
             headers.put("Content-Type", contentType);
             PutObjectOptions options = new PutObjectOptions(inputStream.available(), -1);
             options.setHeaders(headers);
-            fileName = getPath(path) + getPrefix() + fileName;
+            String wrapFileName = getPath(path) + getPrefix() + fileName;
             minioClient.putObject(PutObjectArgs.builder()
                     .bucket(bucket)
-                    .object(fileName)
+                    .object(wrapFileName)
                     .contentType(contentType)
                     .stream(inputStream, inputStream.available(), -1)
                     .build());
-            String url = minioClient.getObjectUrl(bucket, fileName);
+            String url = minioClient.getObjectUrl(bucket, wrapFileName);
             return new MinioObjectInfo()
                     .setBucket(bucket)
+                    .setPath(path)
+                    .setFilename(fileName)
                     .setContentType(contentType)
-                    .setName(fileName)
                     .setUrl(url);
         } catch (Exception e) {
             throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "上传文件异常:" + e.getMessage());
