@@ -14,7 +14,7 @@ kimzing:
     # 前缀类型
     prefixType: time
     # 前缀时间的格式
-    timePattern: yyyy-MM-dd-HH-mm-
+    timePattern: yyyyMMddHHmmss-
   sentinel:
     # 是否启用sentinel相关配置(默认true)
     enabled: true
