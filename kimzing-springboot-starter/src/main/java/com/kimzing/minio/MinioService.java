@@ -153,8 +153,8 @@ public class MinioService {
         if (StringUtil.isBlank(path)) {
             return "";
         }
-        if (!path.startsWith("/")) {
-            path = "/" + path;
+        if (path.startsWith("/")) {
+            path = path.substring(1);
         }
         if (!path.endsWith("/")) {
             path = path + "/";
