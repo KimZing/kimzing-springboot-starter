@@ -61,7 +61,7 @@ public class MinioService {
 
         Boolean exists = bucketExists(bucket);
         if (exists) {
-            LogUtil.info("存储桶[{}]已存在", bucket);
+            LogUtil.debug("存储桶[{}]已存在", bucket);
             return;
         }
 
