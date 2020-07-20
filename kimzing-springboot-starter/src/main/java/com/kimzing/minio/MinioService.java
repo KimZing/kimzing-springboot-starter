@@ -76,6 +76,49 @@ public class MinioService {
     }
 
     /**
+     * 设置存储桶策略为公共读
+     *
+     * @param bucket
+     */
+    public void setBucketPolicyToReadOnly(String bucket) {
+        try {
+            minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
+                    .bucket(bucket)
+                    .config(getPolicy(bucket))
+                    .build());
+        } catch (Exception e) {
+            throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "存储桶策略异常:" + e.getMessage());
+        }
+    }
+
+    /**
+     * 手动设置存储桶策略
+     *
+     * @param bucket
+     * @param config
+     */
+    public void setBucketPolicy(String bucket, String config) {
+        try {
+            minioClient.setBucketPolicy(SetBucketPolicyArgs.builder()
+                .bucket(bucket)
+                .config(config)
+                .build());
+        } catch (Exception e) {
+            throw ExceptionManager.createByCodeAndMessage(MINIO_ERROR_CODE, "存储桶策略异常:" + e.getMessage());
+        }
+    }
+
+    /**
+     * Bucket公共读的配置
+     * @param bucket
+     * @return
+     */
+    private String getPolicy(String bucket) {
+        return String.format("{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetBucketLocation\",\"s3:ListBucket\"],\"Resource\":[\"arn:aws:s3:::%s\"]},{\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"*\"]},\"Action\":[\"s3:GetObject\"],\"Resource\":[\"arn:aws:s3:::%s/*\"]}]}",
+        bucket, bucket);
+    }
+
+    /**
      * 删除存储桶
      *
      * @param bucket
