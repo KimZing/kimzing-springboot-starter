@@ -1,5 +1,6 @@
 package com.kimzing.web.resolver.json;
 
+import com.kimzing.utils.exception.ExceptionManager;
 import com.kimzing.utils.json.JsonUtil;
 import com.kimzing.utils.log.LogUtil;
 import org.springframework.core.MethodParameter;
@@ -46,9 +47,9 @@ public class JsonParamResolver implements HandlerMethodArgumentResolver {
         }
 
         if (parameterAnnotation.required()) {
-            throw new IllegalArgumentException(parameterType.getSimpleName());
+            throw ExceptionManager.createByCodeAndMessage("PARAM_ERROR",
+                    String.format("param %s is required", parameterType.getSimpleName()));
         }
-
         LogUtil.warn("param [{}] is not json format", jsonParam);
         return null;
     }
