@@ -7,6 +7,7 @@ import com.kimzing.web.info.KimZingInfoController;
 import com.kimzing.web.log.WebRequestLogAspect;
 import com.kimzing.web.resolver.MethodParamResolverConfiguration;
 import com.kimzing.web.resolver.json.JsonParamResolver;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -145,8 +146,7 @@ public class WebAutoConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "kimzing.web.cors",
             name = "enabled", havingValue = "true", matchIfMissing = true)
-    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-    @ConditionalOnMissingBean(WebMvcConfigurer.class)
+    @ConditionalOnClass(WebMvcConfigurer.class)
     public WebMvcConfigurer corsConfigurer(WebProperties webProperties) {
         return new WebMvcConfigurer() {
             @Override
