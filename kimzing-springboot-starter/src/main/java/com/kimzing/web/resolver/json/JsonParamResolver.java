@@ -42,15 +42,15 @@ public class JsonParamResolver implements HandlerMethodArgumentResolver {
         Class<?> parameterType = methodParameter.getParameterType();
         JsonParam parameterAnnotation = methodParameter.getParameterAnnotation(JsonParam.class);
 
-        if (JsonUtil.isValid(jsonParam)) {
-            return JsonUtil.jsonToBean(jsonParam, parameterType);
+        if (!JsonUtil.isValid(jsonParam)) {
+            if (parameterAnnotation.required()) {
+                throw ExceptionManager.createByCodeAndMessage("PARAM_ERROR",
+                        String.format("param %s is required", parameterType.getSimpleName()));
+            }
+            LogUtil.warn("param [{}] is not json format", jsonParam);
+            return null;
         }
 
-        if (parameterAnnotation.required()) {
-            throw ExceptionManager.createByCodeAndMessage("PARAM_ERROR",
-                    String.format("param %s is required", parameterType.getSimpleName()));
-        }
-        LogUtil.warn("param [{}] is not json format", jsonParam);
-        return null;
+        return JsonUtil.jsonToBean(jsonParam, parameterType);
     }
 }
