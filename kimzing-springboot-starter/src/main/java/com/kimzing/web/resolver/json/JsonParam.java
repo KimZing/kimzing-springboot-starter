@@ -19,7 +19,7 @@ public @interface JsonParam {
      * 参数名称，和query param中的key对应，如果不存在则使用方法中的参数的变量名
      * @return
      */
-    String name();
+    String name() default "";
 
     /**
      * 该参数是否为必须

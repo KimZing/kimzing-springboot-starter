@@ -3,6 +3,7 @@ package com.kimzing.web.resolver.json;
 import com.kimzing.utils.exception.ExceptionManager;
 import com.kimzing.utils.json.JsonUtil;
 import com.kimzing.utils.log.LogUtil;
+import com.kimzing.utils.string.StringUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -41,7 +42,7 @@ public class JsonParamResolver implements HandlerMethodArgumentResolver {
         // 获取对应的参数解析名称，如果JsonParam.name()不为空则取其值，如果为空则取方法参数变量名
         String paramName = methodParameter.getParameter().getName();
         JsonParam parameterAnnotation = methodParameter.getParameterAnnotation(JsonParam.class);
-        if (parameterAnnotation.name() != null) {
+        if (!StringUtil.isBlank(parameterAnnotation.name())) {
             paramName = parameterAnnotation.name();
         }
         // 获取请求值
