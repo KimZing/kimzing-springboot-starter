@@ -42,6 +42,11 @@ public class WebProperties {
      */
     private CorsProperties cors = new CorsProperties();
 
+    /**
+     * URL与Cookie转义配置
+     */
+    private EscapeProperties escape = new EscapeProperties();
+
     @Data
     public static class ParamResolverProperties {
         /**
@@ -117,6 +122,15 @@ public class WebProperties {
          * 允许的域
          */
         private String[] origins = new String[]{"*"};
+    }
+
+    @Data
+    public static class EscapeProperties {
+        /**
+         * URL与Cookie转义开关
+         */
+        private Boolean enabled = true;
+
     }
 
 }

@@ -7,12 +7,15 @@ import com.kimzing.web.info.KimZingInfoController;
 import com.kimzing.web.log.WebRequestLogAspect;
 import com.kimzing.web.resolver.MethodParamResolverConfiguration;
 import com.kimzing.web.resolver.json.JsonParamResolver;
+import io.undertow.UndertowOptions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -136,6 +139,24 @@ public class WebAutoConfiguration {
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     public MethodParamResolverConfiguration methodParamResolverConfiguration(ApplicationContext context) {
         return new MethodParamResolverConfiguration(context);
+    }
+
+    /**
+     * 开启URL和cookie转义字符功能
+     * @return
+     */
+    @Bean
+    @ConditionalOnProperty(prefix = "kimzing.web.escape.enabled",
+            name = "enabled", havingValue = "true", matchIfMissing = true)
+    public WebServerFactoryCustomizer<UndertowServletWebServerFactory> webServerFactoryCustomizer() {
+        return factory -> {
+            //url配置
+            factory.addBuilderCustomizers(builder ->
+                    builder.setServerOption(UndertowOptions.ALLOW_UNESCAPED_CHARACTERS_IN_URL, Boolean.TRUE));
+            //cookie配置
+            factory.addBuilderCustomizers(builder ->
+                    builder.setServerOption(UndertowOptions.ALLOW_EQUALS_IN_COOKIE_VALUE, Boolean.TRUE));
+        };
     }
 
     /**
