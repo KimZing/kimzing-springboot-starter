@@ -45,8 +45,12 @@ public class JsonParamResolver implements HandlerMethodArgumentResolver {
         if (!StringUtil.isBlank(parameterAnnotation.name())) {
             paramName = parameterAnnotation.name();
         }
+
+        String paramValue = null;
         // 获取请求值
-        String paramValue = parameterMap.get(paramName)[0];
+        if (parameterMap != null && parameterMap.get(paramName) != null && parameterMap.size() > 0) {
+            paramValue = parameterMap.get(paramName)[0];
+        }
         // 获取参数类型
         Class<?> parameterType = methodParameter.getParameterType();
 
