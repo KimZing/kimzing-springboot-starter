@@ -38,19 +38,26 @@ public class JsonParamResolver implements HandlerMethodArgumentResolver {
         HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
         Map<String, String[]> parameterMap = request.getParameterMap();
 
-        String jsonParam = parameterMap.keySet().stream().findFirst().orElse(null);
-        Class<?> parameterType = methodParameter.getParameterType();
+        // 获取对应的参数解析名称，如果JsonParam.name()不为空则取其值，如果为空则取方法参数变量名
+        String paramName = methodParameter.getParameter().getName();
         JsonParam parameterAnnotation = methodParameter.getParameterAnnotation(JsonParam.class);
+        if (parameterAnnotation.name() != null) {
+            paramName = parameterAnnotation.name();
+        }
+        // 获取请求值
+        String paramValue = parameterMap.get(paramName)[0];
+        // 获取参数类型
+        Class<?> parameterType = methodParameter.getParameterType();
 
-        if (!JsonUtil.isValid(jsonParam)) {
+        if (!JsonUtil.isValid(paramValue)) {
             if (parameterAnnotation.required()) {
                 throw ExceptionManager.createByCodeAndMessage("PARAM_ERROR",
                         String.format("param %s is required", parameterType.getSimpleName()));
             }
-            LogUtil.warn("param [{}] is not json format", jsonParam);
+            LogUtil.warn("param [{}] is not json format", paramValue);
             return null;
         }
 
-        return JsonUtil.jsonToBean(jsonParam, parameterType);
+        return JsonUtil.jsonToBean(paramValue, parameterType);
     }
 }

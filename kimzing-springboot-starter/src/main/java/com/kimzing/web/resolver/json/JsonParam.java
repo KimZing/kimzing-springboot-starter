@@ -14,5 +14,16 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JsonParam {
+
+    /**
+     * 参数名称，和query param中的key对应，如果不存在则使用方法中的参数的变量名
+     * @return
+     */
+    String name();
+
+    /**
+     * 该参数是否为必须
+     * @return
+     */
     boolean required() default true;
 }
