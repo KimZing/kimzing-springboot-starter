@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -34,8 +33,7 @@ import java.util.Map;
 @Aspect
 public class WebRequestLogAspect {
 
-    @Value("${yyyy-MM-dd HH:mm:ss:SSS}")
-    private String timePattern;
+    private static final String timePattern = "yyyy-MM-dd HH:mm:ss:SSS";
 
     @Pointcut("(@within(org.springframework.stereotype.Controller) || " +
             "@within(org.springframework.web.bind.annotation.RestController)) && " +
