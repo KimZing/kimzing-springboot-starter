@@ -147,7 +147,7 @@ public class WebAutoConfiguration {
      */
     @Bean
     @ConditionalOnProperty(prefix = "kimzing.web.escape.enabled",
-            name = "enabled", havingValue = "true", matchIfMissing = true)
+            name = "enabled", havingValue = "true", matchIfMissing = false)
     public WebServerFactoryCustomizer<UndertowServletWebServerFactory> webServerFactoryCustomizer() {
         return factory -> {
             //url配置
