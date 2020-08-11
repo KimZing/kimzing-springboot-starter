@@ -26,7 +26,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableKnife4j
 @EnableSwagger2
 @Configuration
-@Profile({"dev", "sit", "test", "perf", "uat"})
 @EnableConfigurationProperties({SwaggerProperties.class})
 @ConditionalOnProperty(prefix = "kimzing.swagger", name = "enabled", havingValue = "true", matchIfMissing = true)
 @ConditionalOnClass({Docket.class,EnableKnife4j.class})
