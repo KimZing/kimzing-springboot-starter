@@ -148,14 +148,17 @@ public class WebAutoConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "kimzing.web.escape.enabled",
             name = "enabled", havingValue = "true", matchIfMissing = false)
-    public WebServerFactoryCustomizer<UndertowServletWebServerFactory> webServerFactoryCustomizer() {
-        return factory -> {
-            //url配置
-            factory.addBuilderCustomizers(builder ->
-                    builder.setServerOption(UndertowOptions.ALLOW_UNESCAPED_CHARACTERS_IN_URL, Boolean.TRUE));
-            //cookie配置
-            factory.addBuilderCustomizers(builder ->
-                    builder.setServerOption(UndertowOptions.ALLOW_EQUALS_IN_COOKIE_VALUE, Boolean.TRUE));
+    public WebServerFactoryCustomizer webServerFactoryCustomizer() {
+        return new WebServerFactoryCustomizer<UndertowServletWebServerFactory>() {
+            @Override
+            public void customize(UndertowServletWebServerFactory factory) {
+                //url配置
+                factory.addBuilderCustomizers(builder ->
+                        builder.setServerOption(UndertowOptions.ALLOW_UNESCAPED_CHARACTERS_IN_URL, Boolean.TRUE));
+                //cookie配置
+                factory.addBuilderCustomizers(builder ->
+                        builder.setServerOption(UndertowOptions.ALLOW_EQUALS_IN_COOKIE_VALUE, Boolean.TRUE));
+            }
         };
     }
 
