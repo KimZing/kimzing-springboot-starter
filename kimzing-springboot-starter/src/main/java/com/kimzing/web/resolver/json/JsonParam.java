@@ -22,6 +22,12 @@ public @interface JsonParam {
     String name() default "";
 
     /**
+     * 时间格式
+     * @return
+     */
+    String pattern() default "yyyy-MM-dd HH:mm";
+
+    /**
      * 该参数是否为必须
      * @return
      */

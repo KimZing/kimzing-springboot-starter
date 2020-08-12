@@ -63,6 +63,6 @@ public class JsonParamResolver implements HandlerMethodArgumentResolver {
             return null;
         }
 
-        return JsonUtil.jsonToBean(paramValue, parameterType);
+        return JsonUtil.jsonToBean(paramValue, parameterType, parameterAnnotation.pattern());
     }
 }
