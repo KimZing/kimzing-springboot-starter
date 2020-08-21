@@ -37,7 +37,7 @@ public class WebRequestLogAspect {
 
     @Pointcut("(@within(org.springframework.stereotype.Controller) || " +
             "@within(org.springframework.web.bind.annotation.RestController)) && " +
-            "execution(* com.*.kimzing..*.*(..))")
+            "execution(* com.kimzing..*.*(..))")
     public void logPointCut() {
     }
 
