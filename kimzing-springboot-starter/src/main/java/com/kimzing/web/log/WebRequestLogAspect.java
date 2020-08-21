@@ -36,8 +36,7 @@ public class WebRequestLogAspect {
     private static final String timePattern = "yyyy-MM-dd HH:mm:ss:SSS";
 
     @Pointcut("(@within(org.springframework.stereotype.Controller) || " +
-            "@within(org.springframework.web.bind.annotation.RestController)) && " +
-            "execution(* com.kimzing..*.*(..))")
+            "@within(org.springframework.web.bind.annotation.RestController))")
     public void logPointCut() {
     }
 
