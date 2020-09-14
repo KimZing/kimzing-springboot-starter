@@ -59,8 +59,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResult list(Integer pageNum, Integer pageSize) {
         PageResult pageResult = userRepository.list(pageNum, pageSize);
-        List<UserDTO> userDTOList = BeanUtil.mapperList(pageResult.getData(), UserDTO.class);
-        pageResult.setData(userDTOList);
+        List<UserDTO> userDTOList = BeanUtil.mapperList(pageResult.getList(), UserDTO.class);
+        pageResult.setList(userDTOList);
         return ApiResult.success(pageResult);
     }
 }

@@ -37,7 +37,7 @@ class KimZingStarterTestApplicationTests {
         LogUtil.info(">>>开始测试:{}", info.getDisplayName());
         String data = "{\"ageFrom\":\"18\",\"ageTo\":\"24\"}";
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/user/list/condition?{data}", data))
+                .get("/user/list/condition?query={data}", data))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value("0"));
         LogUtil.info("<<<<结束测试:{}", info.getDisplayName());

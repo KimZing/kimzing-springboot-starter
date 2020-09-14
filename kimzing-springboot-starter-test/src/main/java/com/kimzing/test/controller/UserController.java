@@ -60,7 +60,7 @@ public class UserController {
      */
     @LogKim("根据Json参数进行查询")
     @GetMapping("/list/condition")
-    public ApiResult listByCondition(@JsonParam UserQueryDTO userQueryDTO) {
+    public ApiResult listByCondition(@JsonParam(name = "query") UserQueryDTO userQueryDTO) {
         return ApiResult.success(userQueryDTO);
     }
 
