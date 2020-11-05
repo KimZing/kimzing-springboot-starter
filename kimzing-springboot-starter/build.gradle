@@ -35,7 +35,7 @@ dependencies {
 
 repositories {
     maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
-    maven { url 'http://mvn.kimzing.com/repository/maven-releases/' }
+    maven { url 'http://mvn.kimzing.com/repository/maven-public/' }
 }
 
 dependencyManagement {
