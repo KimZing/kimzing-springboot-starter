@@ -90,6 +90,7 @@ public class WebRequestLogAspect {
             sb.append("\n================  Request Start  ================\n");
             sb.append(logInfo.toString());
             sb.append("\n================  Request End  ================");
+            LogUtil.info(sb.toString());
         } catch (Exception e) {
             e.printStackTrace();
             LogUtil.warn("WEB切面日志打印异常: [{}]", e.getMessage());
