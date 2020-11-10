@@ -2,7 +2,6 @@ package com.kimzing.web.log;
 
 import com.kimzing.log.LogIgnore;
 import com.kimzing.utils.date.DateUtil;
-import com.kimzing.utils.json.JsonUtil;
 import com.kimzing.utils.log.LogUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -89,9 +88,8 @@ public class WebRequestLogAspect {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append("\n================  Request Start  ================\n");
-            sb.append(JsonUtil.beanToJson(logInfo, timePattern));
+            sb.append(logInfo.toString());
             sb.append("\n================  Request End  ================");
-            LogUtil.info(sb.toString());
         } catch (Exception e) {
             e.printStackTrace();
             LogUtil.warn("WEB切面日志打印异常: [{}]", e.getMessage());
