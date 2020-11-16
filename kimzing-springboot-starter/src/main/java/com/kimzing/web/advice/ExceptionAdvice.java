@@ -3,6 +3,8 @@ package com.kimzing.web.advice;
 import com.kimzing.utils.exception.CustomException;
 import com.kimzing.utils.exception.ExceptionManager;
 import com.kimzing.utils.log.LogUtil;
+import com.kimzing.utils.spring.SpringPropertyUtil;
+import com.kimzing.utils.string.StringUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -31,6 +33,9 @@ public class ExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public CustomException handlerBusinessException(CustomException customException) {
         LogUtil.error("{}", customException);
+        if (StringUtil.isBlank(customException.getMessage())) {
+            customException.setMessage(SpringPropertyUtil.getValueWithDefault(customException.getCode(), "异常信息未定义"));
+        }
         return customException;
     }
 
