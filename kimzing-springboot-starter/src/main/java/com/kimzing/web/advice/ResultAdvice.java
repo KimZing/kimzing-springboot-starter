@@ -4,14 +4,17 @@ import com.kimzing.utils.exception.CustomException;
 import com.kimzing.utils.json.JsonUtil;
 import com.kimzing.utils.result.ApiResult;
 import com.kimzing.utils.spring.SpringPropertyUtil;
+import com.kimzing.utils.string.StringUtil;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+import org.wildfly.common.Assert;
 
 /**
  * 统一结果处理器.
@@ -24,7 +27,16 @@ public class ResultAdvice implements ResponseBodyAdvice {
 
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
-        return returnType.getDeclaringClass().getName().startsWith(SpringPropertyUtil.getValue("kimzing.web.result.package"));
+        String packages = SpringPropertyUtil.getValue("kimzing.web.result.package");
+        Assert.assertFalse(StringUtil.isBlank(packages));
+
+        String[] strings = StringUtils.commaDelimitedListToStringArray(packages);
+        for (String s : strings) {
+            if (returnType.getDeclaringClass().getName().startsWith(s)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
