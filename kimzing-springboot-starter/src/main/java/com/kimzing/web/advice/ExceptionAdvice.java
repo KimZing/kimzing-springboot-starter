@@ -55,6 +55,13 @@ public class ExceptionAdvice {
 
             String message = constraintViolationException.getConstraintViolations().stream()
                     .map(c -> c.getMessage()).findFirst().get();
+
+            // 如果环境变量中存在该code码对应值，则进行替换
+            String codeMessage = SpringPropertyUtil.getValue(message);
+            if (!StringUtil.isBlank(codeMessage)) {
+                message = codeMessage;
+            }
+
             return ExceptionManager.createByCodeAndMessage("VALIDATION", message);
         }
         return ExceptionManager.createByCodeAndMessage("VALIDATION", validationException.getMessage());
