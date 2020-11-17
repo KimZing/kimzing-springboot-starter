@@ -32,10 +32,10 @@ public class ExceptionAdvice {
     @ExceptionHandler(CustomException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public CustomException handlerBusinessException(CustomException customException) {
-        LogUtil.error("{}", customException);
         if (StringUtil.isBlank(customException.getMessage())) {
             customException.setMessage(SpringPropertyUtil.getValueWithDefault(customException.getCode(), "异常信息未定义"));
         }
+        LogUtil.error("{}", customException);
         return customException;
     }
 
