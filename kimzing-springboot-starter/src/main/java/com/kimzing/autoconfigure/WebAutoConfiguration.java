@@ -22,9 +22,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -171,24 +174,19 @@ public class WebAutoConfiguration {
     @ConditionalOnProperty(prefix = "kimzing.web.cors",
             name = "enabled", havingValue = "true", matchIfMissing = true)
     @ConditionalOnClass(WebMvcConfigurer.class)
-    public WebMvcConfigurer corsConfigurer(WebProperties webProperties) {
-        return new WebMvcConfigurer() {
-            @Override
-            //重写父类提供的跨域请求处理的接口
-            public void addCorsMappings(CorsRegistry registry) {
-                //添加映射路径
-                registry.addMapping("/**")
-                        //放行哪些原始域
-                        .allowedOrigins(webProperties.getCors().getOrigins())
-                        //是否发送Cookie信息
-                        .allowCredentials(true)
-                        //放行哪些原始域(请求方式)
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .maxAge(3600)
-                        //放行哪些原始域(头部信息)
-                        .allowedHeaders("*");
-            }
-        };
+    public CorsFilter corsConfigurer(WebProperties webProperties) {
+        final UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration corsConfiguration = new CorsConfiguration();
+        //是否允许发送Cookie信息
+        corsConfiguration.setAllowCredentials(true);
+        //放行哪些原始域
+        Arrays.stream(webProperties.getCors().getOrigins())
+                .forEach(o -> corsConfiguration.addAllowedOrigin(o));
+        corsConfiguration.addAllowedHeader("*");
+        //放行哪些原始域(请求方式)
+        corsConfiguration.addAllowedMethod("*");
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return new CorsFilter(urlBasedCorsConfigurationSource);
     }
 
 }
