@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'com.kimzing'
-version '1.0.1'
+version '1.0.0'
 description = "封装SpringBoot开发中常用的功能，抽象为基础能力，通过简单的配置即可实现相应功能"
 sourceCompatibility = '1.8'
 
